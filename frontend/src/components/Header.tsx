@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import classes from "./Header.module.css";
 
 export const Header = () => {
@@ -5,13 +6,13 @@ export const Header = () => {
     <header className={classes.header}>
       <div className={classes.mainMenu}>
         <h1>
-          <a
-            href="/"
+          <Link
+            to="/"
             className={`${classes.button} ${classes.logo} ${classes.linkButton}`}
           >
             <span className={classes.mobileShortLabel}>TGC</span>
             <span className={classes.desktopLongLabel}>THE GOOD CORNER</span>
-          </a>
+          </Link>
         </h1>
         <form className={classes.textFieldWithButton}>
           <input
@@ -34,68 +35,68 @@ export const Header = () => {
             </svg>
           </button>
         </form>
-        <a
-          href="/post-ad"
+        <Link
+          to="/post-ad"
           className={`${classes.button} ${classes.linkButton}`}
         >
           <span className={`${classes.mobileShortLabel}`}>Publier</span>
           <span className={`${classes.mobileLongLabel}`}>
             Publier une annonce
           </span>
-        </a>
+        </Link>
       </div>
       <nav className={`${classes.categoriesNavigation}`}>
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Ameublement
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Électroménager
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Photographie
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Informatique
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Téléphonie{" "}
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Vélos
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Véhicules
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Sport
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Habillement
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Bébé
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Outillage
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Services{" "}
-        </a>{" "}
+        </Link>{" "}
         •
-        <a href="" className={classes.categoriesNavigationLink}>
+        <Link to="" className={classes.categoryNavigationLink}>
           Vacances
-        </a>
+        </Link>
       </nav>
     </header>
   );

@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import classes from "./AdCard.module.css";
 
 export type AdProps = {
@@ -12,13 +13,13 @@ export const AdCard = (props: AdProps) => {
   return (
     <>
       <div className={classes.adCardContainer}>
-        <a className={classes.adCardLink} href={`/ads/${id}`}>
+        <Link className={classes.adCardLink} to={`/ads/${id}`}>
           <img className={classes.adCardImage} src={imgUrl} />
           <div className={classes.adCardText}>
             <div className={classes.adCardTitle}>{title}</div>
             <div className={classes.adCardPrice}>{price} €</div>
           </div>
-        </a>
+        </Link>
       </div>
     </>
   );
