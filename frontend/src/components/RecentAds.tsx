@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import { AdCard, AdProps } from "./AdCard";
 
-export const RecentAds = () => {
-  const ads: AdProps[] = [
+const getAds = async (): Promise<AdProps[]> => {
+  return [
     {
       id: 1,
       imgUrl: "/images/table.webp",
@@ -39,19 +40,34 @@ export const RecentAds = () => {
       price: 45,
     },
   ];
+};
+
+export const RecentAds = () => {
+  const [ads, setAds] = useState<AdProps[]>([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    getAds().then((newAds) => {
+      setAds(newAds);
+    });
+  }, []);
+
   return (
     <>
       <h2>Annonces récentes</h2>
+      <p>Total price : {totalPrice}</p>
       <section className="recent-ads">
-        {ads.map((ad) => (
-          <AdCard
-            key={ad.id}
-            id={ad.id}
-            imgUrl={ad.imgUrl}
-            title={ad.title}
-            price={ad.price}
-          />
-        ))}
+        {ads &&
+          ads.map((ad) => (
+            <AdCard
+              key={ad.id}
+              id={ad.id}
+              imgUrl={ad.imgUrl}
+              title={ad.title}
+              price={ad.price}
+              onAddToCard={() => setTotalPrice(totalPrice + ad.price)}
+            />
+          ))}
       </section>
     </>
   );

@@ -8,8 +8,12 @@ export type AdProps = {
   price: number;
 };
 
-export const AdCard = (props: AdProps) => {
-  const { id, imgUrl, title, price } = props;
+export const AdCard = (
+  props: AdProps & {
+    onAddToCard: () => void;
+  }
+) => {
+  const { id, imgUrl, title, price, onAddToCard } = props;
   return (
     <>
       <div className={classes.adCardContainer}>
@@ -20,6 +24,9 @@ export const AdCard = (props: AdProps) => {
             <div className={classes.adCardPrice}>{price} €</div>
           </div>
         </Link>
+        <button className={classes.button} onClick={onAddToCard}>
+          Ajouter dans le panier
+        </button>
       </div>
     </>
   );
