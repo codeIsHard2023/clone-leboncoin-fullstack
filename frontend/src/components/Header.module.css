@@ -1,0 +1,104 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-bottom: 1px solid lightgray;
+  padding: 10px;
+  background-color: white;
+}
+
+.mainMenu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  color: #ffa41b;
+}
+
+.button {
+  min-width: 40px;
+  height: 40px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid #ffa41b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffa41b;
+  background-color: white;
+  cursor: pointer;
+}
+
+.logo {
+  border: none;
+}
+
+.buttonPrimary {
+  background-color: #ffa41b;
+  color: white;
+}
+
+.textFieldWithButton {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  gap: 4px;
+}
+
+.mainSearchField {
+  width: 100%;
+  min-width: 120px;
+  max-width: 360px;
+  flex-grow: 1;
+}
+
+.categoriesNavigation {
+  font-size: 12px;
+  font-weight: bold;
+  color: #666;
+  padding: 16px 10px 6px;
+  white-space: nowrap;
+  overflow-x: scroll;
+}
+
+.categoryNavigationLink {
+  text-decoration: unset;
+  color: inherit;
+}
+
+.textField {
+  height: 40px;
+  background-color: white;
+  padding: 8px;
+  border: 2px solid #ffa41b;
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: inherit;
+}
+
+.linkButton {
+  text-decoration: none;
+}
+
+.desktopLongLabel {
+  display: none;
+}
+
+@media screen and (min-width: 720px) {
+  .mobileShortLabel {
+    display: none;
+  }
+  .desktopLongLabel {
+    display: initial;
+  }
+
+  .categoriesNavigation {
+    padding-top: 14px;
+    display: flex;
+    justify-content: space-between;
+  }
+}
