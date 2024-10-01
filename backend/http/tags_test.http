@@ -1,0 +1,39 @@
+GET http://localhost:3000/api/tags
+
+###
+GET http://localhost:3000/api/tags/1
+
+###
+GET http://localhost:3000/api/tags/ads
+
+###
+GET http://localhost:3000/api/tags/1/ads
+
+###
+POST http://localhost:3000/api/tags
+Content-Type: application/json
+
+{
+    "name": "Electrique"
+}
+
+###
+PUT  http://localhost:3000/api/tags/4
+Content-Type: application/json
+
+{
+    "name": "Vélo"
+}
+
+
+###
+PATCH  http://localhost:3000/api/tags/27
+Content-Type: application/json
+
+{
+     "title": "Goodd bike",
+     "price": 9800
+}
+
+###
+DELETE http://localhost:3000/api/tags/1

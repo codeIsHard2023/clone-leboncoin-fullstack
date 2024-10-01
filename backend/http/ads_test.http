@@ -1,42 +1,55 @@
 GET http://localhost:3000/api/ads
 
 ###
+GET http://localhost:3000/api/ads/34
+
+###
+GET http://localhost:3000/api/ads/category/1
+
+###
+GET http://localhost:3000/api/ads?tag=vélos&tag=électrique
+
+###
 POST http://localhost:3000/api/ads
 Content-Type: application/json
 
 {
-    "title": "Bike to sell",
-    "description": "My bike is red, working fine. I'm selling it because I've got a new one",
+    "title": "Speed Bike",
+    "description": "My bike is blue, working fine. I'm selling it because I've got a new one",
     "owner": "bike.seller@gmail.com",
-    "price": 98,
+    "price": 10000,
     "picture": "https://images.lecho.be/view?iid=dc:113129565&context=ONLINE&ratio=16/9&width=640&u=1508242455000",
-    "location": "Lille",
-    "createdAt": "2023-09-05T10:13:14.755Z"
+    "location": "Voiron",
+    "category": {
+        "id": 7
+    },
+    "tags": [{ "id" : 2 }]
 }
 
 ###
-PUT  http://localhost:3000/api/ads/3
+PUT  http://localhost:3000/api/ads/14
 Content-Type: application/json
 
 {
-    "title": "Super bike",
+    "title": "Blue veste",
     "description": "My bike is red, working fine. I'm selling it because I've got a new one",
     "owner": "bike.seller@gmail.com",
-    "price": 1000,
+    "price": 10000,
     "picture": "https://images.lecho.be/view?iid=dc:113129565&context=ONLINE&ratio=16/9&width=640&u=1508242455000",
     "location": "Moirans",
-    "createdAt": "2023-09-05T10:13:14.755Z"
+    "category" : null, 
+    "tags": [ { "id" : 2}, { "id" : 4} ]
 }
 
 
 ###
-PATCH  http://localhost:3000/api/ads/2
+PATCH  http://localhost:3000/api/ads/34
 Content-Type: application/json
 
 {
-    "id": 4,
-    "price": 9900
+     "location": "Moirans",
+     "price": 5000
 }
 
 ###
-DELETE http://localhost:3000/api/ads/3
+DELETE http://localhost:3000/api/ads/34
