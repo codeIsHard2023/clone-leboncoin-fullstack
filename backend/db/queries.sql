@@ -93,6 +93,14 @@ DELETE FROM ad WHERE createdAt <= '2024-09-05' AND location = 'Bordeaux'
 
 UPDATE ad SET price = 14000 WHERE id=34
 
+UPDATE ad SET picture = "https://cdn.pixabay.com/photo/2017/09/07/04/54/khaki-2723896_1280.jpg" WHERE title LIKE '%veste%'
+
+UPDATE ad SET picture = "https://cdn.pixabay.com/photo/2014/08/26/21/49/jeans-428614_1280.jpg" WHERE title LIKE '%jean%'
+
+UPDATE ad SET picture="https://media.istockphoto.com/id/1446609885/fr/photo/3d-illustration.jpg?s=1024x1024&w=is&k=20&c=gM790eb4GeSb8hZ-Ao16qlUGL8QgREKlkanY8aPaTjU=" WHERE categoryId = null
+
+UPDATE ad SET categoryId = 7 WHERE title LIKE '%vélo%'
+
 SELECT AVG(price)FROM ad GROUP BY location
 
 SELECT COUNT(*) FROM ad
