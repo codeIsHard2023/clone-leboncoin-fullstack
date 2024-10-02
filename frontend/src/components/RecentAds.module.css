@@ -1,0 +1,26 @@
+.cart {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+.button {
+  width: 120px;
+  height: 40px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid #ffa41b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffa41b;
+  background-color: white;
+  cursor: pointer;
+}
+.recentAds {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}

@@ -19,12 +19,6 @@ h1 {
   margin: 120px auto 48px;
 }
 
-.recent-ads {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-}
-
 .ad-details-image-container {
   margin-inline-start: -24px;
   margin-inline-end: -24px;

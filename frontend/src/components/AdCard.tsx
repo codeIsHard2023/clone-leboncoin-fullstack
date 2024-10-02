@@ -3,7 +3,7 @@ import classes from "./AdCard.module.css";
 
 export type AdProps = {
   id: number;
-  imgUrl: string;
+  picture: string;
   title: string;
   price: number;
 };
@@ -13,12 +13,13 @@ export const AdCard = (
     onAddToCard: () => void;
   }
 ) => {
-  const { id, imgUrl, title, price, onAddToCard } = props;
+  const { id, picture, title, price, onAddToCard } = props;
+
   return (
     <>
       <div className={classes.adCardContainer}>
         <Link className={classes.adCardLink} to={`/ads/${id}`}>
-          <img className={classes.adCardImage} src={imgUrl} />
+          <img className={classes.adCardImage} src={picture} alt={title} />
           <div className={classes.adCardText}>
             <div className={classes.adCardTitle}>{title}</div>
             <div className={classes.adCardPrice}>{price} €</div>

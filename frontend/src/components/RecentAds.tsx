@@ -1,71 +1,45 @@
 import { useEffect, useState } from "react";
 import { AdCard, AdProps } from "./AdCard";
-
-const getAds = async (): Promise<AdProps[]> => {
-  return [
-    {
-      id: 1,
-      imgUrl: "/images/table.webp",
-      price: 20,
-      title: "Table",
-    },
-    {
-      id: 2,
-      imgUrl: "images/dame-jeanne.webp",
-      title: "Dame-jeanne",
-      price: 75,
-    },
-    {
-      id: 3,
-      imgUrl: "/images/vide-poche.webp",
-      title: "Vide-poche",
-      price: 4,
-    },
-    {
-      id: 4,
-      imgUrl: "/images/vaisselier.webp",
-      title: "Vaisselier",
-      price: 100,
-    },
-    {
-      id: 5,
-      imgUrl: "images/bougie.webp",
-      title: "Bougie",
-      price: 8,
-    },
-    {
-      id: 6,
-      imgUrl: "/images/porte-magazine.webp",
-      title: "Porte-magazine",
-      price: 45,
-    },
-  ];
-};
+import classes from "./RecentAds.module.css";
+import axios from "axios";
 
 export const RecentAds = () => {
   const [ads, setAds] = useState<AdProps[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    getAds().then((newAds) => {
-      setAds(newAds);
-    });
+    const fetchData = async () => {
+      try {
+        const result = await axios.get<AdProps[]>(
+          "http://localhost:3000/api/ads"
+        );
+        setAds(result.data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchData();
   }, []);
 
   return (
     <>
       <h2>Annonces récentes</h2>
-      <p>Total price : {totalPrice}</p>
-      <section className="recent-ads">
+      <div className={classes.cart}>
+        <span style={{ textAlign: "left" }}>Total price : {totalPrice}</span>
+        <button className={classes.button} onClick={() => setTotalPrice(0)}>
+          Vider le panier
+        </button>
+      </div>
+      <section className={classes.recentAds}>
         {ads &&
           ads.map((ad) => (
             <AdCard
               key={ad.id}
               id={ad.id}
-              imgUrl={ad.imgUrl}
+              picture={ad.picture}
               title={ad.title}
-              price={ad.price}
-              onAddToCard={() => setTotalPrice(totalPrice + ad.price)}
+              price={ad.price / 100}
+              onAddToCard={() => setTotalPrice(totalPrice + ad.price / 100)}
             />
           ))}
       </section>

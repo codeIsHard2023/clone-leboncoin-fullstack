@@ -99,6 +99,7 @@
   .categoriesNavigation {
     padding-top: 14px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 2rem;
   }
 }
