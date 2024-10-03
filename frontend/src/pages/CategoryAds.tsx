@@ -51,7 +51,7 @@ export const CategoryAds = () => {
             id={ad.id}
             picture={ad.picture}
             title={ad.title}
-            price={ad.price}
+            price={ad.price / 100}
             onAddToCard={() => "ok"}
           />
         ))

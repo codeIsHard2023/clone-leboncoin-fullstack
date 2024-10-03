@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import classes from "./Header.module.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import classes from "./Header.module.css";
 
 export type Categories = {
   id: number;
@@ -60,7 +60,7 @@ export const Header = () => {
           </button>
         </form>
         <Link
-          to="/post-ad"
+          to="/ads/new-ad"
           className={`${classes.button} ${classes.linkButton}`}
         >
           <span className={`${classes.mobileShortLabel}`}>Publier</span>

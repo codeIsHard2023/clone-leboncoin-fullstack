@@ -108,7 +108,7 @@ router.post("/", async (req, res) => {
     } else {
       console.log(newAd);
       await newAd.save();
-      res.status(200).json({ message: "Ad created succesfully" });
+      res.status(200).json({ message: "Ad created succesfully", id: newAd.id });
     }
   } catch (e) {
     console.error(e);

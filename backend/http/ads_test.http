@@ -52,4 +52,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/api/ads/34
+DELETE http://localhost:3000/api/ads/37
