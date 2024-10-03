@@ -40,7 +40,11 @@ router.get("/", async (req, res) => {
     //       }
     //     }
 
-    const ads = await Ad.find();
+    const ads = await Ad.find({
+      relations: {
+        tags: true,
+      },
+    });
 
     if (ads) {
       res.status(200).json(ads);
@@ -56,7 +60,14 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id);
-    const ad = await Ad.findOneBy({ id });
+    const ad = await Ad.findOne({
+      relations: {
+        tags: true,
+      },
+      where: {
+        id,
+      },
+    });
 
     if (ad) {
       console.log(ad);
@@ -76,6 +87,7 @@ router.get("/category/:id", async (req, res) => {
     const ads = await Ad.find({
       relations: {
         category: true,
+        tags: true,
       },
       where: {
         category: {
@@ -104,9 +116,8 @@ router.post("/", async (req, res) => {
     const errors = await validate(newAd);
 
     if (errors.length) {
-      res.status(400).json(errors);
+      res.status(400).json({ message: errors });
     } else {
-      console.log(newAd);
       await newAd.save();
       res.status(200).json({ message: "Ad created succesfully", id: newAd.id });
     }
@@ -179,7 +190,7 @@ router.delete("/:id", async (req, res) => {
 
     if (adToDelete) {
       await adToDelete.remove();
-      res.status(200).json({ message: "Ad removed succesfully" });
+      res.status(200).json({ message: "Ad removed succesfully", id });
     } else {
       res.status(404).json({ message: "Ad is not found" });
     }

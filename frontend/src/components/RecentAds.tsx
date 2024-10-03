@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import { AdCard, AdProps } from "./AdCard";
+import { AdCard } from "./AdCard";
+import { AdType } from "../types";
 import classes from "./RecentAds.module.css";
 import axios from "axios";
 
 export const RecentAds = () => {
-  const [ads, setAds] = useState<AdProps[]>([]);
+  const [ads, setAds] = useState<AdType[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get<AdProps[]>(
+        const result = await axios.get<AdType[]>(
           "http://localhost:3000/api/ads"
         );
         setAds(result.data);
@@ -39,6 +40,10 @@ export const RecentAds = () => {
               picture={ad.picture}
               title={ad.title}
               price={ad.price / 100}
+              description={ad.description}
+              owner={ad.owner}
+              location={ad.location}
+              category={ad.category}
               onAddToCard={() => setTotalPrice(totalPrice + ad.price / 100)}
             />
           ))}

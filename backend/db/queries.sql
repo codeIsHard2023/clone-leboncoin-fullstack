@@ -93,6 +93,8 @@ DELETE FROM ad WHERE createdAt <= '2024-09-05' AND location = 'Bordeaux'
 
 UPDATE ad SET price = 14000 WHERE id=34
 
+UPDATE ad SET categoryId = 1 WHERE categoryId=NULL
+
 UPDATE ad SET picture = "https://cdn.pixabay.com/photo/2017/09/07/04/54/khaki-2723896_1280.jpg" WHERE title LIKE '%veste%'
 
 UPDATE ad SET picture = "https://cdn.pixabay.com/photo/2023/03/04/20/07/coffee-7830087_1280.jpg" where picture NOT LIKE '%https://%' ;

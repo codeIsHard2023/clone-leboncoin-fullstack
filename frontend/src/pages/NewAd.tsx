@@ -1,11 +1,8 @@
-// "tags": [{ "id" : 2 }]
-
 import { useEffect, useState } from "react";
-import { Categories } from "../components/Header";
+import { AdType, CategoryType, TagType } from "../types";
 import axios from "axios";
-import classes from "./NewAd.module.css";
-import { AdProps } from "../components/AdCard";
 import { useNavigate } from "react-router-dom";
+import classes from "./NewAd.module.css";
 
 export const NewAd = () => {
   const navigate = useNavigate();
@@ -13,22 +10,22 @@ export const NewAd = () => {
   const [title, setTitle] = useState<string>("New jean");
   const [description, setDescription] = useState<string>("Jamais porté");
   const [owner, setOwner] = useState<string>("newjean@gmail.com");
-  const [price, setPrice] = useState<number>(10000);
+  const [price, setPrice] = useState<number>(10);
   const [picture, setPicture] = useState<string>(
     "https://cdn.pixabay.com/photo/2014/08/26/21/49/jeans-428614_1280.jpg"
   );
   const [location, setLocation] = useState<string>("Lyon");
   const [categoryId, setCategoryId] = useState<number>();
+  const [tagsIds, setTagsIds] = useState<number[]>([]);
 
-  const [categories, setCategories] = useState<Categories[]>([]);
-  //   const [tags, setTags] = useState<Categories[]>([]);
-  //   const [isChecked, setIsCHecked] = useState(false);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
+  const [tags, setTags] = useState<TagType[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         {
-          const result = await axios.get<Categories[]>(
+          const result = await axios.get<CategoryType[]>(
             "http://localhost:3000/api/categories"
           );
           setCategories(result.data);
@@ -36,12 +33,12 @@ export const NewAd = () => {
             setCategoryId(result.data[0].id);
           }
         }
-        // {
-        //   const result = await axios.get<Categories[]>(
-        //     "http://localhost:3000/api/tags"
-        //   );
-        //   setTags(result.data);
-        // }
+        {
+          const result = await axios.get<TagType[]>(
+            "http://localhost:3000/api/tags"
+          );
+          setTags(result.data);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -51,21 +48,25 @@ export const NewAd = () => {
   }, []);
 
   const submitForm = async () => {
-    const result = await axios.post<AdProps>(`http://localhost:3000/api/ads`, {
-      title,
-      description,
-      owner,
-      price,
-      picture,
-      location,
-      category: {
-        id: categoryId,
-      },
-      // "tags": [{ "id" : 2 }]
-    });
-    if (result.status === 200) {
-      const newId = result.data.id;
-      navigate(`/ads/${newId}`, { replace: true });
+    try {
+      const result = await axios.post<AdType>(`http://localhost:3000/api/ads`, {
+        title,
+        description,
+        owner,
+        price: price * 100,
+        picture,
+        location,
+        category: categoryId ? { id: categoryId } : null,
+        tags: tagsIds.map((tag) => {
+          return { id: tag };
+        }),
+      });
+      if (result.status === 200) {
+        const newId = result.data.id;
+        navigate(`/ads/${newId}`, { replace: true });
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -83,6 +84,7 @@ export const NewAd = () => {
           className={classes.textField}
           type="text"
           value={title}
+          placeholder="Titre d'annonce"
           id="title"
           onChange={(e) => setTitle(e.target.value)}
         />
@@ -90,6 +92,7 @@ export const NewAd = () => {
         <textarea
           className={`${classes.textarea}`}
           value={description}
+          placeholder="Tapez la déscription ici"
           id="description"
           onChange={(e) => setDescription(e.target.value)}
         />
@@ -98,14 +101,16 @@ export const NewAd = () => {
           className={classes.textField}
           type="text"
           value={owner}
+          placeholder="example@mail.com"
           id="owner"
           onChange={(e) => setOwner(e.target.value)}
         />
-        <label htmlFor="price"> Price </label>
+        <label htmlFor="price"> Prix en € </label>
         <input
           className={classes.textField}
           type="number"
           value={price}
+          placeholder="Prix"
           id="price"
           onChange={(e) => setPrice(Number(e.target.value))}
         />
@@ -114,6 +119,7 @@ export const NewAd = () => {
           className={classes.textField}
           type="text"
           value={picture}
+          placeholder=""
           id="picture"
           onChange={(e) => setPicture(e.target.value)}
         />
@@ -122,6 +128,7 @@ export const NewAd = () => {
           className={classes.textField}
           type="text"
           value={location}
+          placeholder="Ville"
           id="location"
           onChange={(e) => setLocation(e.target.value)}
         />
@@ -138,24 +145,37 @@ export const NewAd = () => {
             </option>
           ))}
         </select>
-        {/* <label>Choisissez les tags correspondants</label>
+        <label>Choisissez les tags correspondants</label>
         <div>
           {tags.map((tag) => (
             <div key={tag.id}>
               <span>{tag.name}</span>
               <input
                 type="checkbox"
-                name={tag.name}
-                id={tag.id.toString()}
-                checked={isChecked}
-                onClick={() => {
-                  setIsCHecked(!isChecked);
-                  console.log(isChecked);
+                checked={tagsIds.includes(tag.id) === true}
+                onChange={() => {
+                  if (tagsIds.includes(tag.id) === true) {
+                    const newArray = [];
+                    for (const entry of tagsIds) {
+                      if (entry !== tag.id) {
+                        newArray.push(entry);
+                      }
+                    }
+                    setTagsIds(newArray);
+                  } else {
+                    tagsIds.push(tag.id);
+
+                    const newArray = [];
+                    for (const entry of tagsIds) {
+                      newArray.push(entry);
+                    }
+                    setTagsIds(newArray);
+                  }
                 }}
               />
             </div>
           ))}
-        </div> */}
+        </div>
 
         <button className={classes.button}>Créer une nouvelle annonce</button>
       </form>

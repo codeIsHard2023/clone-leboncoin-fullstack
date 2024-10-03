@@ -1,7 +1,7 @@
 GET http://localhost:3000/api/ads
 
 ###
-GET http://localhost:3000/api/ads/34
+GET http://localhost:3000/api/ads/53
 
 ###
 GET http://localhost:3000/api/ads/category/1

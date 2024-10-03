@@ -1,15 +1,9 @@
 import { Link } from "react-router-dom";
+import { AdType } from "../types";
 import classes from "./AdCard.module.css";
 
-export type AdProps = {
-  id: number;
-  picture: string;
-  title: string;
-  price: number;
-};
-
 export const AdCard = (
-  props: AdProps & {
+  props: AdType & {
     onAddToCard: () => void;
   }
 ) => {

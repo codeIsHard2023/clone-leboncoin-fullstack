@@ -1,13 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { AdCard, AdProps } from "../components/AdCard";
+import { AdCard } from "../components/AdCard";
+import { AdType } from "../types";
 import axios from "axios";
 
 export const CategoryAds = () => {
   const { id } = useParams<{ id: string | undefined }>();
 
   const [categoryId, setCategoryId] = useState<number | null>(null);
-  const [categoryAds, setCategoryAds] = useState<AdProps[]>();
+  const [categoryAds, setCategoryAds] = useState<AdType[]>();
   const [categoryName, setCategoryName] = useState<string>();
 
   useEffect(() => {
@@ -52,6 +53,10 @@ export const CategoryAds = () => {
             picture={ad.picture}
             title={ad.title}
             price={ad.price / 100}
+            owner={ad.owner}
+            description={ad.description}
+            location={ad.location}
+            category={ad.category}
             onAddToCard={() => "ok"}
           />
         ))

@@ -2,19 +2,15 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import classes from "./Header.module.css";
-
-export type Categories = {
-  id: number;
-  name: string;
-};
+import { CategoryType } from "../types";
 
 export const Header = () => {
-  const [categories, setCategories] = useState<Categories[]>([]);
+  const [categories, setCategories] = useState<CategoryType[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get<Categories[]>(
+        const result = await axios.get<CategoryType[]>(
           "http://localhost:3000/api/categories"
         );
         setCategories(result.data);
