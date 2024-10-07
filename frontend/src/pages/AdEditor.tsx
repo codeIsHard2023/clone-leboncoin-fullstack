@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { AdType, CategoryType, TagType } from "../types";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { CategoryCreation } from "../components/CategoryCreation";
+import { TagCreation } from "../components/TagsCreation";
 import classes from "./NewAd.module.css";
 
 export const NewAd = () => {
@@ -21,30 +23,37 @@ export const NewAd = () => {
   const [categories, setCategories] = useState<CategoryType[]>([]);
   const [tags, setTags] = useState<TagType[]>([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        {
-          const result = await axios.get<CategoryType[]>(
-            "http://localhost:3000/api/categories"
-          );
-          setCategories(result.data);
-          if (result.data.length > 0) {
-            setCategoryId(result.data[0].id);
-          }
-        }
-        {
-          const result = await axios.get<TagType[]>(
-            "http://localhost:3000/api/tags"
-          );
-          setTags(result.data);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const [showCateg, setShowCateg] = useState(false);
+  const [showTag, setShowTag] = useState(false);
 
-    fetchData();
+  const fetchCatgories = async () => {
+    try {
+      const result = await axios.get<CategoryType[]>(
+        "http://localhost:3000/api/categories"
+      );
+      setCategories(result.data);
+      if (result.data.length > 0) {
+        setCategoryId(result.data[0].id);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchTags = async () => {
+    try {
+      const result = await axios.get<TagType[]>(
+        "http://localhost:3000/api/tags"
+      );
+      setTags(result.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCatgories();
+    fetchTags();
   }, []);
 
   const submitForm = async () => {
@@ -145,6 +154,18 @@ export const NewAd = () => {
             </option>
           ))}
         </select>
+        <button type="button" onClick={() => setShowCateg(!showCateg)}>
+          {showCateg ? "Cacher" : "Afficher"}
+        </button>
+        {showCateg && (
+          <CategoryCreation
+            onCreateCateg={async (id) => {
+              setShowCateg(false);
+              await fetchCatgories();
+              setCategoryId(id);
+            }}
+          />
+        )}
         <label>Choisissez les tags correspondants</label>
         <div>
           {tags.map((tag) => (
@@ -175,6 +196,19 @@ export const NewAd = () => {
               />
             </div>
           ))}
+          <button type="button" onClick={() => setShowTag(!showTag)}>
+            {showTag ? "Cacher" : "Afficher"}
+          </button>
+          {showTag && (
+            <TagCreation
+              onCreateTag={async (id) => {
+                setShowTag(false);
+                await fetchTags();
+                tagsIds.push(id);
+                setTagsIds([...tagsIds]);
+              }}
+            />
+          )}
         </div>
 
         <button className={classes.button}>Créer une nouvelle annonce</button>

@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
     } else {
       await newTag.save();
       console.log(newTag);
-      res.status(204).json({ message: "New tag added" });
+      res.status(200).json({ message: "New tag added", id: newTag.id });
     }
   } catch (e) {
     console.error(e);

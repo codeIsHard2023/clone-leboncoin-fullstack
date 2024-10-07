@@ -4,7 +4,7 @@ import { Home } from "./pages/Home";
 import { About } from "./pages/About";
 import { AdDetails } from "./pages/AdDetails";
 import { CategoryAds } from "./pages/CategoryAds";
-import { NewAd } from "./pages/NewAd";
+import { NewAd } from "./pages/AdEditor";
 import "./App.css";
 
 export function App() {

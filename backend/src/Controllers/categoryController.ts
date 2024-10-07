@@ -51,7 +51,9 @@ router.post("/", async (req, res) => {
     } else {
       await newCategory.save();
       console.log(newCategory);
-      res.status(200).json({ message: "New category added" });
+      res
+        .status(200)
+        .json({ message: "New category added", id: newCategory.id });
     }
   } catch (e) {
     console.error(e);

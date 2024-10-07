@@ -50,9 +50,14 @@ export const AdDetails = () => {
     <section className={classes.adDetails}>
       <div className={classes.adHeader}>
         <h4>{ad.title}</h4>
-        <button className={classes.button} onClick={deleteAdt}>
-          Supprimer
-        </button>
+        <div style={{ display: "flex", gap: "16px" }}>
+          <Link to="/ads/new-ad" className={classes.button} onClick={deleteAdt}>
+            Modifier
+          </Link>
+          <button className={classes.button} onClick={deleteAdt}>
+            Supprimer
+          </button>
+        </div>
       </div>
       <div className={classes.adImageContainer}>
         <img className={classes.adImage} src={ad.picture} alt={ad.title} />
