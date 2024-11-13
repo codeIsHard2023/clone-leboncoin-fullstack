@@ -1,5 +1,5 @@
 import express from "express";
-import { Ad } from "../../db/entities/Ad";
+import { Ad } from "../entities/Ad";
 import { validate } from "class-validator";
 
 export const router = express.Router();
