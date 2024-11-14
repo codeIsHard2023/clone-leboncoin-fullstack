@@ -17,7 +17,7 @@ export class Tag extends BaseEntity {
   id!: number;
 
   @ManyToMany(() => Ad, (ad) => ad.tags)
-  @Field(() => [Ad])
+  @Field(() => [Ad], { nullable: true }) // to be checked
   ads!: Ad[];
 
   @Column({ length: 100 })

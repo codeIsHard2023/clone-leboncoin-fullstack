@@ -1,29 +1,42 @@
-import { Arg, Query, Resolver, ID, Mutation } from "type-graphql";
+import { Arg, Query, Resolver, ID, Mutation, Info } from "type-graphql";
 import {
   Category,
   CreateCategoryInput,
   UpdateCategoryInput,
 } from "../entities/Category";
 import { validate } from "class-validator";
+import { GraphQLResolveInfo } from "graphql";
+import { hasRelation } from "../utils/relationCheck";
 
 @Resolver()
 export class CategoriesResolver {
   @Query(() => [Category])
-  async categories(): Promise<Category[]> {
+  async categories(@Info() info: GraphQLResolveInfo): Promise<Category[]> {
     const categories = await Category.find({
       relations: {
-        ads: true,
+        ads: hasRelation(info, "ads")
+          ? {
+              tags: hasRelation(info, "tags"),
+            }
+          : false,
       },
     });
     return categories;
   }
 
   @Query(() => Category, { nullable: true })
-  async category(@Arg("id", () => ID) id: number): Promise<Category | null> {
+  async category(
+    @Arg("id", () => ID) id: number,
+    @Info() info: GraphQLResolveInfo
+  ): Promise<Category | null> {
     const category = await Category.findOne({
       where: { id },
       relations: {
-        ads: true,
+        ads: hasRelation(info, "ads")
+          ? {
+              tags: hasRelation(info, "tags"),
+            }
+          : false,
       },
     });
     if (category) {
@@ -39,7 +52,9 @@ export class CategoriesResolver {
   ): Promise<Category[] | null> {
     const ads = await Category.find({
       relations: {
-        ads: true,
+        ads: {
+          tags: true,
+        },
       },
       where: {
         id,
@@ -58,7 +73,10 @@ export class CategoriesResolver {
     const errors = await validate(newCategory);
 
     if (errors.length) {
-      return null;
+      throw new Error(
+        errors.map((e) => Object.values(e.constraints!)).join(", ")
+      );
+      // return null;
     } else {
       await newCategory.save();
       return newCategory;
