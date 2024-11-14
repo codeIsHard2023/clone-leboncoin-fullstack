@@ -1,4 +1,4 @@
-import { Field, ID, Int, ObjectType } from "type-graphql";
+import { Field, ID, InputType, Int, ObjectType } from "type-graphql";
 import { IsEmail, IsUrl, Length, Max, Min } from "class-validator";
 import {
   BaseEntity,
@@ -12,6 +12,7 @@ import {
 } from "typeorm";
 import { Category } from "./Category";
 import { Tag } from "./Tag";
+import { IdInput } from "./ID";
 
 @Entity("ad")
 @ObjectType()
@@ -26,6 +27,7 @@ export class Ad extends BaseEntity {
 
   @ManyToMany(() => Tag, (tag) => tag.ads)
   @JoinTable()
+  @Field(() => [Tag])
   tags!: Tag[];
 
   @Column({ length: 100 })
@@ -33,8 +35,8 @@ export class Ad extends BaseEntity {
   @Field()
   title!: string;
 
-  @Column({ length: 500 })
-  @Length(10, 500, { message: "Entre 10 et 500 caractères" })
+  @Column({ nullable: true })
+  //   @Length(10, 500, { message: "Entre 10 et 500 caractères" })
   @Field(() => String, { nullable: true })
   description!: string;
 
@@ -67,4 +69,58 @@ export class Ad extends BaseEntity {
   private setCreatedAt() {
     this.createdAt = new Date();
   }
+}
+
+@InputType()
+export class AdCreateInput {
+  @Field(() => IdInput)
+  category!: IdInput;
+
+  @Field(() => [IdInput], { nullable: true })
+  tags!: IdInput[];
+
+  @Field()
+  title!: string;
+
+  @Field(() => String, { nullable: true })
+  description!: string;
+
+  @Field()
+  owner!: string;
+
+  @Field(() => Int)
+  price!: number;
+
+  @Field()
+  picture!: string;
+
+  @Field()
+  location!: string;
+}
+
+@InputType()
+export class AdUpdateInput {
+  @Field(() => IdInput, { nullable: true })
+  category!: IdInput;
+
+  @Field(() => [IdInput], { nullable: true })
+  tags!: IdInput[];
+
+  @Field({ nullable: true })
+  title!: string;
+
+  @Field(() => String, { nullable: true })
+  description!: string;
+
+  @Field({ nullable: true })
+  owner!: string;
+
+  @Field(() => Int, { nullable: true })
+  price!: number;
+
+  @Field({ nullable: true })
+  picture!: string;
+
+  @Field({ nullable: true })
+  location!: string;
 }

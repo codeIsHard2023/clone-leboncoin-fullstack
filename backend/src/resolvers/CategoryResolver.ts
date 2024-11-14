@@ -88,9 +88,9 @@ export class CategoryResolver {
 
     if (categoryToDelete) {
       await categoryToDelete.remove();
-      return null;
-    } else {
       return categoryToDelete;
+    } else {
+      return null;
     }
   }
 }

@@ -26,18 +26,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// router.get("/:id/ads", (req, res) => {
-
-//   const ads = Tag.find({
-//     relations: {
-//       ads: true,
-//     }
-//   })
-
-//   res.json(ads)
-
-// })
-
 router.post("/", async (req, res) => {
   try {
     const newTag = new Tag();
