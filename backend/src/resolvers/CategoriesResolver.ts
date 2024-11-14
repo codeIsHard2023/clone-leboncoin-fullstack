@@ -1,9 +1,13 @@
 import { Arg, Query, Resolver, ID, Mutation } from "type-graphql";
-import { Category } from "../entities/Category";
+import {
+  Category,
+  CreateCategoryInput,
+  UpdateCategoryInput,
+} from "../entities/Category";
 import { validate } from "class-validator";
 
 @Resolver()
-export class CategoryResolver {
+export class CategoriesResolver {
   @Query(() => [Category])
   async categories(): Promise<Category[]> {
     const categories = await Category.find({
@@ -46,9 +50,11 @@ export class CategoryResolver {
   }
 
   @Mutation(() => Category)
-  async addCategory(@Arg("name") name: string): Promise<Category | null> {
+  async addCategory(
+    @Arg("data", () => CreateCategoryInput) data: CreateCategoryInput
+  ): Promise<Category | null> {
     const newCategory = new Category();
-    newCategory.name = name;
+    Object.assign(newCategory, data);
     const errors = await validate(newCategory);
 
     if (errors.length) {
@@ -62,12 +68,12 @@ export class CategoryResolver {
   @Mutation(() => Category, { nullable: true })
   async updateCategory(
     @Arg("id", () => ID) id: number,
-    @Arg("name", () => String) name: String
+    @Arg("data", () => UpdateCategoryInput) data: UpdateCategoryInput
   ): Promise<Category | null> {
     const categoryToUpdate = await Category.findOneBy({ id });
 
     if (categoryToUpdate) {
-      Object.assign(categoryToUpdate, name);
+      Object.assign(categoryToUpdate, data);
 
       const errors = await validate(categoryToUpdate);
 
@@ -87,8 +93,9 @@ export class CategoryResolver {
     const categoryToDelete = await Category.findOneBy({ id });
 
     if (categoryToDelete) {
+      const category = { ...categoryToDelete };
       await categoryToDelete.remove();
-      return categoryToDelete;
+      return category as Category;
     } else {
       return null;
     }

@@ -3,8 +3,9 @@ import { buildSchema } from "type-graphql";
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { datasource } from "./datasource";
-import { CategoryResolver } from "./resolvers/CategoryResolver";
+import { CategoriesResolver } from "./resolvers/CategoriesResolver";
 import { AdsResolver } from "./resolvers/AdsResolver";
+import { TagsResolver } from "./resolvers/TagsResolver";
 
 const port: number = 3000;
 const portClient: number = 5173;
@@ -13,7 +14,7 @@ async function initialize() {
   await datasource.initialize(); // wait connection to db before server start
   console.log("Datasource is connected");
   const schema = await buildSchema({
-    resolvers: [CategoryResolver, AdsResolver],
+    resolvers: [CategoriesResolver, AdsResolver, TagsResolver],
   });
 
   const server = new ApolloServer({ schema });

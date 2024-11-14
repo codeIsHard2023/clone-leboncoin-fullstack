@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Ad } from "./Ad";
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ID, InputType, ObjectType } from "type-graphql";
 
 @Entity("tag")
 @ObjectType()
@@ -24,4 +24,16 @@ export class Tag extends BaseEntity {
   @Length(3, 100, { message: "Entre 3 et 100 caractères" })
   @Field()
   name!: string;
+}
+
+@InputType()
+export class CreateTagInput {
+  @Field()
+  name!: String;
+}
+
+@InputType()
+export class UpdateTagInput {
+  @Field({ nullable: true })
+  name!: String;
 }
