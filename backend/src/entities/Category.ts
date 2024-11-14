@@ -12,15 +12,16 @@ import { ID, ObjectType, Field } from "type-graphql";
 @Entity("category")
 @ObjectType()
 export class Category extends BaseEntity {
-  @Field(() => ID)
   @PrimaryGeneratedColumn()
+  @Field(() => ID)
   id!: number;
 
   @OneToMany(() => Ad, (ad) => ad.category)
+  @Field(() => [Ad])
   ads!: Ad[];
 
-  @Field()
   @Column({ length: 100 })
   @Length(3, 100, { message: "Entre 3 et 100 caractères" })
+  @Field()
   name!: string;
 }

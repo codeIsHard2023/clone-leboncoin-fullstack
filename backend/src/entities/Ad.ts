@@ -1,51 +1,70 @@
+import { Field, ID, Int, ObjectType } from "type-graphql";
 import { IsEmail, IsUrl, Length, Max, Min } from "class-validator";
-import { BaseEntity, BeforeInsert, Column, Entity, JoinTable, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  BeforeInsert,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Category } from "./Category";
 import { Tag } from "./Tag";
 
 @Entity("ad")
+@ObjectType()
 export class Ad extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id!: number;
-    
-    @ManyToOne(() => Category, (category) => category.ads, {eager: true} )
-    category!: Category;
+  @PrimaryGeneratedColumn()
+  @Field(() => ID)
+  id!: number;
 
-    @ManyToMany(() => Tag, (tag) => tag.ads)
-    @JoinTable()
-    tags!: Tag[]; 
+  @ManyToOne(() => Category, (category) => category.ads, { eager: true })
+  @Field(() => Category)
+  category!: Category;
 
-    @Column({ length: 100 })
-    @Length(5, 100, {message: "Entre 5 et 100 caractères"})
-    title!: string;
-    
-    @Column({ length: 500})
-    @Length(10, 500, {message: "Entre 10 et 500 caractères"})
-	description!: string; 
+  @ManyToMany(() => Tag, (tag) => tag.ads)
+  @JoinTable()
+  tags!: Tag[];
 
-    @Column()
-    @IsEmail()
-	owner!: string; 
+  @Column({ length: 100 })
+  @Length(5, 100, { message: "Entre 5 et 100 caractères" })
+  @Field()
+  title!: string;
 
-	@Column()
-    @Min(0)
-    @Max(100000)
-    price!: number;
+  @Column({ length: 500 })
+  @Length(10, 500, { message: "Entre 10 et 500 caractères" })
+  @Field(() => String, { nullable: true })
+  description!: string;
 
-    @Column()
-    @IsUrl()
-    picture!: string; 
+  @Column()
+  @IsEmail()
+  @Field()
+  owner!: string;
 
-    @Column({ length: 110})
-    @Length(2, 110, {message: "Entre 2 et 110 caractères"})
-    location!: string; 
+  @Column()
+  @Min(0)
+  @Max(100000)
+  @Field(() => Int)
+  price!: number;
 
-	@Column()
-    createdAt!: Date; 
+  @Column()
+  @IsUrl()
+  @Field()
+  picture!: string;
 
-    @BeforeInsert()
-    private setCreatedAt(){
-        this.createdAt = new Date();
-    }
+  @Column({ length: 110 })
+  @Length(2, 110, { message: "Entre 2 et 110 caractères" })
+  @Field()
+  location!: string;
 
+  @Column()
+  @Field()
+  createdAt!: Date;
+
+  @BeforeInsert()
+  private setCreatedAt() {
+    this.createdAt = new Date();
+  }
 }
