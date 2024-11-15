@@ -1,27 +1,19 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@apollo/client";
 import { AdCard } from "./AdCard";
-import { AdType } from "../types";
 import classes from "./RecentAds.module.css";
-import axios from "axios";
+import { GET_ADS } from "../api/ads";
+import { useState } from "react";
+import { AdType } from "../types";
 
 export const RecentAds = () => {
-  const [ads, setAds] = useState<AdType[]>([]);
+  const { data, loading, error } = useQuery(GET_ADS, {
+    fetchPolicy: "cache-and-network",
+  });
   const [totalPrice, setTotalPrice] = useState(0);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await axios.get<AdType[]>(
-          "http://localhost:3000/api/ads"
-        );
-        setAds(result.data);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    fetchData();
-  }, []);
+  const ads = data?.ads as AdType[];
 
+  if (error) return <p>{`Error! ${error.message}`}</p>;
   return (
     <>
       <h2>Annonces récentes</h2>
@@ -32,6 +24,7 @@ export const RecentAds = () => {
         </button>
       </div>
       <section className={classes.recentAds}>
+        {loading && <p>Chargement en cours</p>}
         {ads &&
           ads.map((ad) => (
             <AdCard

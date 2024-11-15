@@ -1,31 +1,21 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import { AdType } from "../types";
 import classes from "./AdDetails.module.css";
+import { useQuery } from "@apollo/client";
+import { GET_AD } from "../api/ads";
 
 export const AdDetails = () => {
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
 
-  const [ad, setAd] = useState<AdType>();
+  const { data, loading, error } = useQuery<{ ad: AdType }>(GET_AD, {
+    fetchPolicy: "cache-and-network",
+    variables: { adId: id },
+  });
 
-  useEffect(() => {
-    const dataFetch = async () => {
-      try {
-        if (id) {
-          const result = await axios.get<AdType>(
-            `http://localhost:3000/api/ads/${id}`
-          );
-          setAd(result.data);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    dataFetch();
-  }, [id]);
+  const ad = data?.ad;
 
   const deleteAdt = async () => {
     try {
@@ -43,13 +33,12 @@ export const AdDetails = () => {
     }
   };
 
-  if (ad === undefined) {
-    return <p>Loading...</p>;
-  }
+  if (error) return <p>{`Error! ${error.message}`}</p>;
   return (
     <section className={classes.adDetails}>
+      {loading && <p>Chargement en cours</p>}
       <div className={classes.adHeader}>
-        <h4>{ad.title}</h4>
+        <h4>{ad?.title}</h4>
         <div style={{ display: "flex", gap: "16px" }}>
           <Link to="/ads/new-ad" className={classes.button} onClick={deleteAdt}>
             Modifier
@@ -60,15 +49,15 @@ export const AdDetails = () => {
         </div>
       </div>
       <div className={classes.adImageContainer}>
-        <img className={classes.adImage} src={ad.picture} alt={ad.title} />
+        <img className={classes.adImage} src={ad?.picture} alt={ad?.title} />
         <span className={classes.dateText}>Date de publication </span>
       </div>
       <div className={classes.adDescContainer}>
         <div>
           <h5>Description</h5>
-          <p>{ad.description}</p>
+          <p>{ad?.description}</p>
         </div>
-        <span>Prix : {ad.price / 100} €</span>
+        <span>Prix : {ad?.price / 100} €</span>
       </div>
       <div>
         Critères
@@ -78,11 +67,11 @@ export const AdDetails = () => {
         </div>
       </div>
       <div>
-        <span>Retrait à {ad.location}</span>
+        <span>Retrait à {ad?.location}</span>
         <div>map</div>
       </div>
       <div className={classes.adOwnerInfo}>
-        <span>{ad.owner}</span>
+        <span>{ad?.owner}</span>
         <button className={classes.button} style={{ marginTop: "1rem" }}>
           Contacter vendeur
         </button>

@@ -2,14 +2,20 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { AdCard } from "../components/AdCard";
 import { AdType } from "../types";
-import axios from "axios";
+import { useQuery } from "@apollo/client";
+import { GET_CATEGORY_ADS } from "../api/categories";
 
 export const CategoryAds = () => {
   const { id } = useParams<{ id: string | undefined }>();
-
   const [categoryId, setCategoryId] = useState<number | null>(null);
-  const [categoryAds, setCategoryAds] = useState<AdType[]>();
-  const [categoryName, setCategoryName] = useState<string>();
+
+  const { data, loading, error } = useQuery(GET_CATEGORY_ADS, {
+    variables: { categoryId },
+    skip: categoryId === null,
+  });
+
+  const categoryName = data?.category?.name as string;
+  const categoryAds = data?.category?.ads as AdType[];
 
   useEffect(() => {
     if (id !== undefined) {
@@ -19,32 +25,10 @@ export const CategoryAds = () => {
     }
   }, [id]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (categoryId) {
-          const result = await axios.get(
-            `http://localhost:3000/api/categories/${categoryId}/ads`
-          );
-          setCategoryAds(result.data[0].ads);
-          setCategoryName(result.data[0].name);
-        }
-      } catch (e) {
-        console.error(e);
-      }
-    };
-
-    if (categoryId !== null) {
-      try {
-        fetchData();
-      } catch (e) {
-        console.error(e);
-      }
-    }
-  }, [categoryId]);
-
+  if (error) return <p>{`Error! ${error.message}`}</p>;
   return (
     <>
+      {loading && <p>Chargement en cours</p>}
       {categoryAds && categoryAds.length > 0 ? (
         categoryAds.map((ad) => (
           <AdCard

@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AdType, CategoryType, TagType } from "../types";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CategoryCreation } from "../components/CategoryCreation";
 import { TagCreation } from "../components/TagsCreation";
 import classes from "./NewAd.module.css";
+import { useQuery } from "@apollo/client";
+import { GET_CATEGORIES } from "../api/categories";
+import { GET_TAGS } from "../api/tags";
 
 export const NewAd = () => {
   const navigate = useNavigate();
@@ -20,41 +23,19 @@ export const NewAd = () => {
   const [categoryId, setCategoryId] = useState<number>();
   const [tagsIds, setTagsIds] = useState<number[]>([]);
 
-  const [categories, setCategories] = useState<CategoryType[]>([]);
-  const [tags, setTags] = useState<TagType[]>([]);
-
   const [showCateg, setShowCateg] = useState(false);
   const [showTag, setShowTag] = useState(false);
 
-  const fetchCatgories = async () => {
-    try {
-      const result = await axios.get<CategoryType[]>(
-        "http://localhost:3000/api/categories"
-      );
-      setCategories(result.data);
-      if (result.data.length > 0) {
-        setCategoryId(result.data[0].id);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { data, loading, error } = useQuery<{ categories: CategoryType[] }>(
+    GET_CATEGORIES
+  );
 
-  const fetchTags = async () => {
-    try {
-      const result = await axios.get<TagType[]>(
-        "http://localhost:3000/api/tags"
-      );
-      setTags(result.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const categories = data?.categories;
 
-  useEffect(() => {
-    fetchCatgories();
-    fetchTags();
-  }, []);
+  const tagsData = useQuery<{ tags: TagType[] }>(GET_TAGS);
+  const tags = tagsData.data?.tags;
+  const tagsLoading = tagsData.loading;
+  const tagsError = tagsData.error;
 
   const submitForm = async () => {
     try {
@@ -79,6 +60,9 @@ export const NewAd = () => {
     }
   };
 
+  if (error || tagsError) {
+    return <p>{`Error! ${error?.message || tagsError?.message}`}</p>;
+  }
   return (
     <div className={classes.formContainer}>
       <form
@@ -148,7 +132,8 @@ export const NewAd = () => {
           value={categoryId}
           onChange={(e) => setCategoryId(parseInt(e.target.value))}
         >
-          {categories.map((category) => (
+          {loading && <option>Chargement en cours</option>}
+          {categories?.map((category) => (
             <option value={category.id} key={category.id}>
               {category.name}
             </option>
@@ -161,14 +146,15 @@ export const NewAd = () => {
           <CategoryCreation
             onCreateCateg={async (id) => {
               setShowCateg(false);
-              await fetchCatgories();
+              // await fetchCatgories(); // mettre à jour suite à la suprresion de la fonction
               setCategoryId(id);
             }}
           />
         )}
         <label>Choisissez les tags correspondants</label>
         <div>
-          {tags.map((tag) => (
+          {tagsLoading && <p>Tags se chargent</p>}
+          {tags?.map((tag) => (
             <div key={tag.id}>
               <span>{tag.name}</span>
               <input
@@ -203,7 +189,7 @@ export const NewAd = () => {
             <TagCreation
               onCreateTag={async (id) => {
                 setShowTag(false);
-                await fetchTags();
+                // await fetchTags(); à update
                 tagsIds.push(id);
                 setTagsIds([...tagsIds]);
               }}
