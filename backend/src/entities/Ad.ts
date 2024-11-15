@@ -12,7 +12,7 @@ import {
 } from "typeorm";
 import { Category } from "./Category";
 import { Tag } from "./Tag";
-import { IdInput } from "./ID";
+import { IdInput } from "./Id";
 
 @Entity("ad")
 @ObjectType()
