@@ -36,3 +36,11 @@ export const GET_AD = gql`
     }
   }
 `;
+
+export const CREATE_AD = gql`
+  mutation CreateAd($data: AdCreateInput!) {
+    createAd(data: $data) {
+      id
+    }
+  }
+`;

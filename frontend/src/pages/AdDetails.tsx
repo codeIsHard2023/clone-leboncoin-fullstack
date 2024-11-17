@@ -11,7 +11,6 @@ export const AdDetails = () => {
   const id = Number(params.id);
 
   const { data, loading, error } = useQuery<{ ad: AdType }>(GET_AD, {
-    fetchPolicy: "cache-and-network",
     variables: { adId: id },
   });
 

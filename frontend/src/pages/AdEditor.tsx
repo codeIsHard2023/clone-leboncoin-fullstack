@@ -1,13 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AdType, CategoryType, TagType } from "../types";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { CategoryCreation } from "../components/CategoryCreation";
 import { TagCreation } from "../components/TagsCreation";
 import classes from "./NewAd.module.css";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_CATEGORIES } from "../api/categories";
 import { GET_TAGS } from "../api/tags";
+import { CREATE_AD } from "../api/ads";
 
 export const NewAd = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ export const NewAd = () => {
   const [owner, setOwner] = useState<string>("newjean@gmail.com");
   const [price, setPrice] = useState<number>(10);
   const [picture, setPicture] = useState<string>(
-    "https://cdn.pixabay.com/photo/2014/08/26/21/49/jeans-428614_1280.jpg"
+    "https://cdn.pixabay.com/photo/2016/02/13/13/11/oldtimer-1197800_1280.jpg"
   );
   const [location, setLocation] = useState<string>("Lyon");
   const [categoryId, setCategoryId] = useState<number>();
@@ -26,42 +26,60 @@ export const NewAd = () => {
   const [showCateg, setShowCateg] = useState(false);
   const [showTag, setShowTag] = useState(false);
 
-  const { data, loading, error } = useQuery<{ categories: CategoryType[] }>(
-    GET_CATEGORIES
-  );
+  const {
+    data: dataCategories,
+    loading: loadingCategories,
+    error: errorCategories,
+  } = useQuery<{ categories: CategoryType[] }>(GET_CATEGORIES);
 
-  const categories = data?.categories;
+  const categories = dataCategories?.categories;
 
-  const tagsData = useQuery<{ tags: TagType[] }>(GET_TAGS);
-  const tags = tagsData.data?.tags;
-  const tagsLoading = tagsData.loading;
-  const tagsError = tagsData.error;
+  useEffect(() => {
+    if (categories && !categoryId) {
+      setCategoryId(categories[0]?.id);
+    }
+  }, [dataCategories]);
+
+  const {
+    data: dataTags,
+    loading: loadingTags,
+    error: errorTags,
+  } = useQuery<{ tags: TagType[] }>(GET_TAGS);
+
+  const tags = dataTags?.tags;
+
+  const [createAd, { loading: loadingCreateAd }] = useMutation<{
+    id: number;
+    ad: AdType;
+  }>(CREATE_AD);
 
   const submitForm = async () => {
-    try {
-      const result = await axios.post<AdType>(`http://localhost:3000/api/ads`, {
-        title,
-        description,
-        owner,
-        price: price * 100,
-        picture,
-        location,
-        category: categoryId ? { id: categoryId } : null,
-        tags: tagsIds.map((tag) => {
-          return { id: tag };
-        }),
-      });
-      if (result.status === 200) {
-        const newId = result.data.id;
-        navigate(`/ads/${newId}`, { replace: true });
-      }
-    } catch (error) {
-      console.error(error);
+    const { data } = await createAd({
+      variables: {
+        data: {
+          title,
+          description,
+          owner,
+          price: price * 100,
+          picture,
+          location,
+          category: categoryId ? { id: categoryId } : null,
+          tags: tagsIds.map((tag) => {
+            return { id: tag };
+          }),
+        },
+      },
+    });
+    if (data) {
+      // const newId: number = data.id;
+      console.log(data.ad.id);
+      // navigate(`/ads/${newId}`, { replace: true });
+      console.log("RESULT =>", data);
     }
   };
 
-  if (error || tagsError) {
-    return <p>{`Error! ${error?.message || tagsError?.message}`}</p>;
+  if (errorCategories || errorTags) {
+    return <p>{`Error! ${errorCategories?.message || errorTags?.message}`}</p>;
   }
   return (
     <div className={classes.formContainer}>
@@ -132,7 +150,7 @@ export const NewAd = () => {
           value={categoryId}
           onChange={(e) => setCategoryId(parseInt(e.target.value))}
         >
-          {loading && <option>Chargement en cours</option>}
+          {loadingCategories && <option>Chargement en cours</option>}
           {categories?.map((category) => (
             <option value={category.id} key={category.id}>
               {category.name}
@@ -153,7 +171,7 @@ export const NewAd = () => {
         )}
         <label>Choisissez les tags correspondants</label>
         <div>
-          {tagsLoading && <p>Tags se chargent</p>}
+          {loadingTags && <p>Tags se chargent</p>}
           {tags?.map((tag) => (
             <div key={tag.id}>
               <span>{tag.name}</span>
