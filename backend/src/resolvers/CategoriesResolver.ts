@@ -65,7 +65,7 @@ export class CategoriesResolver {
   }
 
   @Mutation(() => Category)
-  async addCategory(
+  async createCategory(
     @Arg("data", () => CreateCategoryInput) data: CreateCategoryInput
   ): Promise<Category | null> {
     const newCategory = new Category();

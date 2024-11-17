@@ -47,7 +47,7 @@ export class Ad extends BaseEntity {
 
   @Column()
   @Min(0)
-  @Max(100000)
+  @Max(10000000)
   @Field(() => Int)
   price!: number;
 

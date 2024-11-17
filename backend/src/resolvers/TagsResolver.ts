@@ -35,7 +35,7 @@ export class TagsResolver {
   //   }
 
   @Mutation(() => Tag)
-  async addTag(@Arg("data") data: CreateTagInput): Promise<Tag | null> {
+  async createTag(@Arg("data") data: CreateTagInput): Promise<Tag | null> {
     const newTag = new Tag();
     Object.assign(newTag, data);
     const errors = await validate(newTag);

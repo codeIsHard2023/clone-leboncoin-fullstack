@@ -37,7 +37,7 @@ export class AdsResolver {
   }
 
   @Mutation(() => Ad)
-  async addAd(
+  async createAd(
     @Arg("data", () => AdCreateInput) data: AdCreateInput
   ): Promise<Ad> {
     const newAd = new Ad();
