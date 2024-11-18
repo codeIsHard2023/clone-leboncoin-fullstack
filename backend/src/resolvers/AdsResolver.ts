@@ -68,9 +68,9 @@ export class AdsResolver {
 
     if (adToUpdate) {
       if (data.tags) {
-        const { tags, ...resData } = data;
+        const { tags, ...restData } = data;
 
-        Object.assign(adToUpdate, resData);
+        Object.assign(adToUpdate, restData);
 
         adToUpdate.tags = [];
         const tagsToAdd = await Promise.all(
