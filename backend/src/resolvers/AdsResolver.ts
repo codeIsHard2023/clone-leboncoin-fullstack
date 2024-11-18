@@ -83,7 +83,7 @@ export class AdsResolver {
 
       const errors = await validate(adToUpdate);
       if (errors.length) {
-        return null;
+        throw new Error(`Error validation : ${errors}`);
       }
 
       await adToUpdate.save();
