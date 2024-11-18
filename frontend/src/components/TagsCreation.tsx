@@ -1,36 +1,36 @@
 import { useState } from "react";
-import { TagType } from "../types";
-import axios from "axios";
+import { useMutation } from "@apollo/client";
+import { CREATE_TAG, GET_TAGS } from "../api/tags";
 
 export const TagCreation = (props: { onCreateTag(id: number): void }) => {
-  const [name, setName] = useState<string>();
+  const [name, setName] = useState<string>("");
+
+  const [doCreatTag, { error }] = useMutation(CREATE_TAG, {
+    refetchQueries: [GET_TAGS],
+  });
 
   const createNewTag = async () => {
-    try {
-      const result = await axios.post<TagType>(
-        `http://localhost:3000/api/tags`,
-        {
-          name,
-        }
-      );
-      if (result.status === 200) {
-        console.log(result.data.id);
-        setName("");
-        props.onCreateTag(result.data.id);
-      }
-    } catch (error) {
-      console.error(error);
+    if (!name?.trim()) return;
+    const { data: createTag } = await doCreatTag({
+      variables: { data: { name } },
+    });
+    if (createTag.name) {
+      console.log(createTag.name);
+      setName("");
+      props.onCreateTag(createTag.name);
     }
   };
+  if (error) return <p>{`Error! ${error?.message}`}</p>;
 
   return (
     <div>
       <input
         type="text"
         value={name}
+        placeholder="Tag name"
         onChange={(e) => setName(e.target.value)}
       />
-      <button type="button" onClick={createNewTag}>
+      <button type="button" onClick={createNewTag} disabled={!name?.trim()}>
         Créer un nouveau tag
       </button>
     </div>

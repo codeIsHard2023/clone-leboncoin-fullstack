@@ -44,3 +44,20 @@ export const CREATE_AD = gql`
     }
   }
 `;
+
+export const UPDATE_AD = gql`
+  mutation UpdateAdd($data: AdUpdateInput!, $adId: ID!) {
+    updateAdd(data: $data, id: $adId) {
+      id
+      title
+    }
+  }
+`;
+
+export const DELETE_AD = gql`
+  mutation DeleteAd($adId: ID!) {
+    deleteAd(id: $adId) {
+      id
+    }
+  }
+`;

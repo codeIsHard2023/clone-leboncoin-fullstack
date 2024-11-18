@@ -6,7 +6,9 @@ export type AdType = {
   description: string;
   owner: string;
   location: string;
-  category?: CategoryType[];
+  createdAt: Date;
+  category?: CategoryType;
+  tags: TagType[];
 };
 
 export type CategoryType = {

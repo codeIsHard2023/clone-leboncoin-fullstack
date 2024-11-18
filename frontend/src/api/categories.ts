@@ -27,3 +27,12 @@ export const GET_CATEGORY_ADS = gql`
     }
   }
 `;
+
+export const CREATE_CATEGORY = gql`
+  mutation CreateCategory($data: CreateCategoryInput!) {
+    createCategory(data: $data) {
+      name
+      id
+    }
+  }
+`;

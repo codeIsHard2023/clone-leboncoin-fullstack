@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { AdType, CategoryType, TagType } from "../types";
+import { CategoryType, TagType } from "../types";
 import { useNavigate } from "react-router-dom";
 import { CategoryCreation } from "../components/CategoryCreation";
 import { TagCreation } from "../components/TagsCreation";
@@ -9,7 +9,7 @@ import { GET_CATEGORIES } from "../api/categories";
 import { GET_TAGS } from "../api/tags";
 import { CREATE_AD } from "../api/ads";
 
-export const NewAd = () => {
+export const NewAdEditor = () => {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState<string>("New jean");
@@ -34,12 +34,6 @@ export const NewAd = () => {
 
   const categories = dataCategories?.categories;
 
-  useEffect(() => {
-    if (categories && !categoryId) {
-      setCategoryId(categories[0]?.id);
-    }
-  }, [dataCategories]);
-
   const {
     data: dataTags,
     loading: loadingTags,
@@ -48,13 +42,18 @@ export const NewAd = () => {
 
   const tags = dataTags?.tags;
 
-  const [createAd, { loading: loadingCreateAd }] = useMutation<{
-    id: number;
-    ad: AdType;
-  }>(CREATE_AD);
+  useEffect(() => {
+    if (categories && !categoryId) {
+      setCategoryId(categories[0]?.id);
+    }
+  }, [dataCategories]);
+
+  const [doCreateAd, { loading: loadingCreateAd }] = useMutation(CREATE_AD);
 
   const submitForm = async () => {
-    const { data } = await createAd({
+    const {
+      data: { createAd },
+    } = await doCreateAd({
       variables: {
         data: {
           title,
@@ -70,11 +69,14 @@ export const NewAd = () => {
         },
       },
     });
-    if (data) {
-      // const newId: number = data.id;
-      console.log(data.ad.id);
-      // navigate(`/ads/${newId}`, { replace: true });
-      console.log("RESULT =>", data);
+    if (createAd) {
+      const newId: number = parseInt(createAd.id);
+      console.log(newId);
+      if (!loadingCreateAd) {
+        console.log("loading false. we can navigate on ad details");
+        navigate(`/ads/${newId}`, { replace: true });
+      }
+      console.log("RESULT =>", createAd);
     }
   };
 
@@ -158,7 +160,7 @@ export const NewAd = () => {
           ))}
         </select>
         <button type="button" onClick={() => setShowCateg(!showCateg)}>
-          {showCateg ? "Cacher" : "Afficher"}
+          {showCateg ? "Cacher" : "Rajouter une catégorie"}
         </button>
         {showCateg && (
           <CategoryCreation
@@ -201,7 +203,7 @@ export const NewAd = () => {
             </div>
           ))}
           <button type="button" onClick={() => setShowTag(!showTag)}>
-            {showTag ? "Cacher" : "Afficher"}
+            {showTag ? "Cacher" : "Rajouter un tag"}
           </button>
           {showTag && (
             <TagCreation
