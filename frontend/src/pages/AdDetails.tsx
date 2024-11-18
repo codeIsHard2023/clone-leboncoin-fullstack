@@ -40,7 +40,7 @@ export const AdDetails = () => {
       <div className={classes.adHeader}>
         <h4>{ad?.title}</h4>
         <div style={{ display: "flex", gap: "16px" }}>
-          <Link to={`/ads/updateAd/${id}`} className={classes.button}>
+          <Link to={`/ads/${id}/update/`} className={classes.button}>
             Modifier
           </Link>
           <button className={classes.button} onClick={deleteAdt}>
@@ -70,11 +70,11 @@ export const AdDetails = () => {
           }}
         >
           <span style={{ marginTop: "1rem" }}>
-            Catégorie : {ad?.category?.name.toLowerCase()}
+            Catégorie: {ad?.category?.name.toLowerCase()}
           </span>
-          <div style={{ marginBlock: "1rem" }}>
-            {data?.ad.tags &&
-              data.ad.tags.map((tag) => {
+          {data?.ad.tags && (
+            <div style={{ marginBlock: "1rem" }}>
+              {data.ad.tags.map((tag) => {
                 return (
                   <Link
                     to="/"
@@ -95,7 +95,8 @@ export const AdDetails = () => {
                   </Link>
                 );
               })}
-          </div>
+            </div>
+          )}
         </div>
       </div>
       <div>

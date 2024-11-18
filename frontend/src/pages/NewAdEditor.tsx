@@ -73,10 +73,8 @@ export const NewAdEditor = () => {
       const newId: number = parseInt(createAd.id);
       console.log(newId);
       if (!loadingCreateAd) {
-        console.log("loading false. we can navigate on ad details");
         navigate(`/ads/${newId}`, { replace: true });
       }
-      console.log("RESULT =>", createAd);
     }
   };
 
@@ -166,7 +164,6 @@ export const NewAdEditor = () => {
           <CategoryCreation
             onCreateCateg={async (id) => {
               setShowCateg(false);
-              // await fetchCatgories(); // mettre à jour suite à la suprresion de la fonction
               setCategoryId(id);
             }}
           />
@@ -209,7 +206,6 @@ export const NewAdEditor = () => {
             <TagCreation
               onCreateTag={async (id) => {
                 setShowTag(false);
-                // await fetchTags(); à update
                 tagsIds.push(id);
                 setTagsIds([...tagsIds]);
               }}

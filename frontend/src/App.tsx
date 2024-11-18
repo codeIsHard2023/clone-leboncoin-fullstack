@@ -15,7 +15,7 @@ export function App() {
         <Route path="/" element={<Home />} />
         <Route path="about" element={<About />} />
         <Route path="/ads/new-ad" element={<NewAdEditor />} />
-        <Route path="ads/updateAd/:id" element={<UpdateAdEditor />} />
+        <Route path="/ads/:id/update/" element={<UpdateAdEditor />} />
         <Route path="/ads/:id" element={<AdDetails />} />
         <Route path="/categories/:id" element={<CategoryAds />} />
         <Route path="*" Component={() => <Navigate to="/" />} />

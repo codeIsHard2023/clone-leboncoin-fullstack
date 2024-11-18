@@ -3,11 +3,11 @@ import { AdType, CategoryType, TagType } from "../types";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { CategoryCreation } from "./CategoryCreation";
 import { TagCreation } from "./TagsCreation";
-import classes from "../pages/NewAd.module.css";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_CATEGORIES } from "../api/categories";
 import { GET_TAGS } from "../api/tags";
 import { GET_AD, UPDATE_AD } from "../api/ads";
+import classes from "../pages/NewAd.module.css";
 
 export const CreateUpdateForm = () => {
   const navigate = useNavigate();
@@ -20,38 +20,47 @@ export const CreateUpdateForm = () => {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
 
-  const {
-    data,
-    // loading: adLoading,
-    // error: adError,
-  } = useQuery<{ ad: AdType }>(GET_AD, {
+  const { data } = useQuery<{ ad: AdType }>(GET_AD, {
     variables: { adId: id },
   });
 
   const ad = data?.ad;
-
-  const [title, setTitle] = useState<string>(ad?.title ?? "new title");
-  const [description, setDescription] = useState<string>(
-    ad?.description ?? "Jamais porté"
-  );
-  const [owner, setOwner] = useState<string>(ad?.owner ?? "newjean@gmail.com");
-  const [price, setPrice] = useState<number>(ad?.price ?? 10);
+  const [title, setTitle] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
+  const [owner, setOwner] = useState<string>("");
+  const [price, setPrice] = useState<number>(0);
   const [picture, setPicture] = useState<string>(
-    ad?.picture ??
-      "https://cdn.pixabay.com/photo/2016/02/13/13/11/oldtimer-1197800_1280.jpg"
+    "https://cdn.pixabay.com/photo/2016/02/13/13/11/oldtimer-1197800_1280.jpg"
   );
-  const [location, setLocation] = useState<string>(ad?.location ?? "Lyon");
+  const [location, setLocation] = useState<string>("Lyon");
   const [categoryId, setCategoryId] = useState<number>();
   const [tagsIds, setTagsIds] = useState<number[]>([]);
-
   const [showCateg, setShowCateg] = useState(false);
   const [showTag, setShowTag] = useState(false);
 
-  const {
-    data: dataCategories,
-    loading: loadingCategories,
-    // error: errorCategories,
-  } = useQuery<{ categories: CategoryType[] }>(GET_CATEGORIES);
+  useEffect(() => {
+    if (ad) {
+      setTitle(ad.title ?? "New title");
+      setDescription(ad.description ?? "");
+      setOwner(ad.owner ?? "New owner");
+      setPrice(data.ad.price / 100);
+      setPicture(
+        data.ad.picture ??
+          "https://cdn.pixabay.com/photo/2016/02/13/13/11/oldtimer-1197800_1280.jpg"
+      );
+      setLocation(data.ad.location && "Lyon");
+      if (data.ad.category?.id) {
+        setCategoryId(data.ad.category.id);
+      }
+      if (data.ad.tags) {
+        setTagsIds(data.ad.tags.map((tag) => tag.id));
+      }
+    }
+  }, [data]);
+
+  const { data: dataCategories, loading: loadingCategories } = useQuery<{
+    categories: CategoryType[];
+  }>(GET_CATEGORIES);
 
   const categories = dataCategories?.categories;
 
@@ -66,7 +75,7 @@ export const CreateUpdateForm = () => {
   const tags = dataTags?.tags;
 
   useEffect(() => {
-    if (categories && categories.length && !categoryId) {
+    if (categories && categories.length && !categoryId && !ad?.category?.id) {
       setCategoryId(categories[0]?.id);
     }
   }, [categories]);
@@ -180,7 +189,6 @@ export const CreateUpdateForm = () => {
           <CategoryCreation
             onCreateCateg={async (id) => {
               setShowCateg(false);
-              // await fetchCatgories(); // mettre à jour suite à la suprresion de la fonction
               setCategoryId(id);
             }}
           />
@@ -223,7 +231,6 @@ export const CreateUpdateForm = () => {
             <TagCreation
               onCreateTag={async (id) => {
                 setShowTag(false);
-                // await fetchTags(); à update
                 tagsIds.push(id);
                 setTagsIds([...tagsIds]);
               }}
@@ -232,7 +239,7 @@ export const CreateUpdateForm = () => {
         </div>
 
         <button className={classes.button}>
-          {currentUrl.includes("updateAd")
+          {currentUrl.includes("update")
             ? "Mettre à jour l'annonce"
             : "Créer une nouvelle annonce"}
         </button>
