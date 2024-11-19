@@ -28,6 +28,7 @@ export const Header = () => {
           <input
             className={`${classes.textField} ${classes.mainSearchField}`}
             type="search"
+            placeholder="Rechercher sur the good corner"
           />
           <button className={`${classes.button} ${classes.buttonPrimary}`}>
             <svg
@@ -51,7 +52,7 @@ export const Header = () => {
         >
           <span className={`${classes.mobileShortLabel}`}>Publier</span>
           <span className={`${classes.mobileLongLabel}`}>
-            Publier une annonce
+            Déposer une annonce
           </span>
         </Link>
       </div>

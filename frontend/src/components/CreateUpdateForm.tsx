@@ -1,62 +1,29 @@
 import { useEffect, useState } from "react";
 import { AdType, CategoryType, TagType } from "../types";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryCreation } from "./CategoryCreation";
 import { TagCreation } from "./TagsCreation";
 import { useMutation, useQuery } from "@apollo/client";
 import { GET_CATEGORIES } from "../api/categories";
 import { GET_TAGS } from "../api/tags";
-import { GET_AD, UPDATE_AD } from "../api/ads";
+import { CREATE_AD, UPDATE_AD } from "../api/ads";
 import classes from "../pages/NewAd.module.css";
 
-export const CreateUpdateForm = () => {
+export const CreateUpdateForm = (props: { ad?: AdType }) => {
+  const { ad } = props;
   const navigate = useNavigate();
   const currentUrl = useLocation().pathname;
-  const [isUpdate, setIsUpdate] = useState(true);
 
-  useEffect(() => {
-    setIsUpdate(currentUrl.includes("update"));
-  }, [currentUrl]);
-  const params = useParams<{ id: string }>();
-  const id = Number(params.id);
-
-  const { data } = useQuery<{ ad: AdType }>(GET_AD, {
-    variables: { adId: id },
-  });
-
-  const ad = data?.ad;
   const [title, setTitle] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [owner, setOwner] = useState<string>("");
   const [price, setPrice] = useState<number>(0);
-  const [picture, setPicture] = useState<string>(
-    "https://cdn.pixabay.com/photo/2016/02/13/13/11/oldtimer-1197800_1280.jpg"
-  );
-  const [location, setLocation] = useState<string>("Lyon");
+  const [picture, setPicture] = useState<string>("");
+  const [location, setLocation] = useState<string>("");
   const [categoryId, setCategoryId] = useState<number>();
   const [tagsIds, setTagsIds] = useState<number[]>([]);
   const [showCateg, setShowCateg] = useState(false);
   const [showTag, setShowTag] = useState(false);
-
-  useEffect(() => {
-    if (ad) {
-      setTitle(ad.title ?? "New title");
-      setDescription(ad.description ?? "");
-      setOwner(ad.owner ?? "New owner");
-      setPrice(data.ad.price / 100);
-      setPicture(
-        data.ad.picture ??
-          "https://cdn.pixabay.com/photo/2016/02/13/13/11/oldtimer-1197800_1280.jpg"
-      );
-      setLocation(data.ad.location && "Lyon");
-      if (data.ad.category?.id) {
-        setCategoryId(data.ad.category.id);
-      }
-      if (data.ad.tags) {
-        setTagsIds(data.ad.tags.map((tag) => tag.id));
-      }
-    }
-  }, [data]);
 
   const { data: dataCategories, loading: loadingCategories } = useQuery<{
     categories: CategoryType[];
@@ -64,15 +31,40 @@ export const CreateUpdateForm = () => {
 
   const categories = dataCategories?.categories;
 
-  const {
-    data: dataTags,
-    loading: loadingTags,
-    // error: errorTags,
-  } = useQuery<{ tags: TagType[] }>(GET_TAGS, {
+  const { data: dataTags, loading: loadingTags } = useQuery<{
+    tags: TagType[];
+  }>(GET_TAGS, {
     fetchPolicy: "cache-and-network",
   });
 
   const tags = dataTags?.tags;
+
+  useEffect(() => {
+    if (ad) {
+      setTitle(ad.title);
+      setDescription(ad.description);
+      setOwner(ad.owner);
+      setPrice(ad.price / 100);
+      setPicture(ad.picture);
+      setLocation(ad.location);
+      if (ad.category?.id) {
+        setCategoryId(ad.category.id);
+      }
+      if (ad.tags) {
+        setTagsIds(ad.tags.map((tag) => tag.id));
+      }
+    } else {
+      setTitle("New title");
+      setOwner("NewOwner@gmail.com");
+      setPicture(
+        "https://cdn.pixabay.com/photo/2016/02/13/13/11/oldtimer-1197800_1280.jpg"
+      );
+      setLocation("Lyon");
+      if (categoryId) {
+        setCategoryId(categories && categories[0]?.id);
+      }
+    }
+  }, [ad]);
 
   useEffect(() => {
     if (categories && categories.length && !categoryId && !ad?.category?.id) {
@@ -80,29 +72,58 @@ export const CreateUpdateForm = () => {
     }
   }, [categories]);
 
-  const [doUpdateAd, { loading: loadingUpdateAd, error: errorUpdate }] =
+  const [doUpdateAd, { error: errorUpdate, loading: loadingUpdateAd }] =
     useMutation(UPDATE_AD);
 
+  const [doCreateAd, { loading: loadingCreateAd }] = useMutation(CREATE_AD);
+
   const submitForm = async () => {
-    const { data } = await doUpdateAd({
-      variables: {
-        data: {
-          title,
-          description,
-          owner,
-          price: price * 100,
-          picture,
-          location,
-          category: categoryId ? { id: categoryId } : null,
-          tags: tagsIds.map((tag) => {
-            return { id: tag };
-          }),
+    if (ad) {
+      const { data } = await doUpdateAd({
+        variables: {
+          data: {
+            title,
+            description,
+            owner,
+            price: price * 100,
+            picture,
+            location,
+            category: categoryId ? { id: categoryId } : null,
+            tags: tagsIds.map((tag) => {
+              return { id: tag };
+            }),
+          },
+          adId: ad.id,
         },
-        adId: id,
-      },
-    });
-    if (!errorUpdate?.message && !loadingUpdateAd) {
-      navigate(`/ads/${id}`, { replace: true });
+      });
+      if (!errorUpdate?.message && !loadingUpdateAd) {
+        navigate(`/ads/${ad.id}`, { replace: true });
+      }
+    } else {
+      const {
+        data: { createAd },
+      } = await doCreateAd({
+        variables: {
+          data: {
+            title,
+            description,
+            owner,
+            price: price * 100,
+            picture,
+            location,
+            category: categoryId ? { id: categoryId } : null,
+            tags: tagsIds.map((tag) => {
+              return { id: tag };
+            }),
+          },
+        },
+      });
+      if (createAd) {
+        const newId: number = parseInt(createAd.id);
+        if (!loadingCreateAd) {
+          navigate(`/ads/${newId}`, { replace: true });
+        }
+      }
     }
   };
 
