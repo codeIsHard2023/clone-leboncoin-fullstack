@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { AdType, CategoryType, TagType } from "../types";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CategoryCreation } from "./CategoryCreation";
 import { TagCreation } from "./TagsCreation";
@@ -8,8 +7,9 @@ import { GET_CATEGORIES } from "../api/categories";
 import { GET_TAGS } from "../api/tags";
 import { CREATE_AD, UPDATE_AD } from "../api/ads";
 import classes from "../pages/NewAd.module.css";
+import { AdQuery } from "../gql/graphql";
 
-export const CreateUpdateForm = (props: { ad?: AdType }) => {
+export const CreateUpdateForm = (props: AdQuery) => {
   const { ad } = props;
   const navigate = useNavigate();
   const currentUrl = useLocation().pathname;
@@ -20,29 +20,24 @@ export const CreateUpdateForm = (props: { ad?: AdType }) => {
   const [price, setPrice] = useState<number>(0);
   const [picture, setPicture] = useState<string>("");
   const [location, setLocation] = useState<string>("");
-  const [categoryId, setCategoryId] = useState<number>();
-  const [tagsIds, setTagsIds] = useState<number[]>([]);
+  const [categoryId, setCategoryId] = useState<string | undefined>("");
+  const [tagsIds, setTagsIds] = useState<string[]>([]);
   const [showCateg, setShowCateg] = useState(false);
   const [showTag, setShowTag] = useState(false);
 
-  const { data: dataCategories, loading: loadingCategories } = useQuery<{
-    categories: CategoryType[];
-  }>(GET_CATEGORIES);
+  const { data: dataCategories, loading: loadingCategories } =
+    useQuery(GET_CATEGORIES);
 
   const categories = dataCategories?.categories;
 
-  const { data: dataTags, loading: loadingTags } = useQuery<{
-    tags: TagType[];
-  }>(GET_TAGS, {
-    fetchPolicy: "cache-and-network",
-  });
+  const { data: dataTags, loading: loadingTags } = useQuery(GET_TAGS);
 
   const tags = dataTags?.tags;
 
   useEffect(() => {
     if (ad) {
       setTitle(ad.title);
-      setDescription(ad.description);
+      setDescription(ad.description ? ad.description : "");
       setOwner(ad.owner);
       setPrice(ad.price / 100);
       setPicture(ad.picture);
@@ -88,21 +83,19 @@ export const CreateUpdateForm = (props: { ad?: AdType }) => {
             price: price * 100,
             picture,
             location,
-            category: categoryId ? { id: categoryId } : null,
+            category: { id: `${categoryId}` },
             tags: tagsIds.map((tag) => {
-              return { id: tag };
+              return { id: `${tag}` };
             }),
           },
-          adId: ad.id,
+          adId: `${ad.id}`,
         },
       });
       if (!errorUpdate?.message && !loadingUpdateAd) {
-        navigate(`/ads/${ad.id}`, { replace: true });
+        navigate(`/ads/${data?.updateAdd?.id}`, { replace: true });
       }
     } else {
-      const {
-        data: { createAd },
-      } = await doCreateAd({
+      const { data } = await doCreateAd({
         variables: {
           data: {
             title,
@@ -111,15 +104,15 @@ export const CreateUpdateForm = (props: { ad?: AdType }) => {
             price: price * 100,
             picture,
             location,
-            category: categoryId ? { id: categoryId } : null,
+            category: { id: `${categoryId}` },
             tags: tagsIds.map((tag) => {
-              return { id: tag };
+              return { id: `${tag}` };
             }),
           },
         },
       });
-      if (createAd) {
-        const newId: number = parseInt(createAd.id);
+      if (data?.createAd) {
+        const newId: number = parseInt(data.createAd.id);
         if (!loadingCreateAd) {
           navigate(`/ads/${newId}`, { replace: true });
         }
@@ -194,7 +187,7 @@ export const CreateUpdateForm = (props: { ad?: AdType }) => {
           className={classes.textField}
           id="categories"
           value={categoryId}
-          onChange={(e) => setCategoryId(parseInt(e.target.value))}
+          onChange={(e) => setCategoryId(e.target.value)}
         >
           {loadingCategories && <option>Chargement en cours</option>}
           {categories?.map((category) => (
@@ -210,7 +203,7 @@ export const CreateUpdateForm = (props: { ad?: AdType }) => {
           <CategoryCreation
             onCreateCateg={async (id) => {
               setShowCateg(false);
-              setCategoryId(id);
+              setCategoryId(`${id}`);
             }}
           />
         )}
@@ -252,7 +245,7 @@ export const CreateUpdateForm = (props: { ad?: AdType }) => {
             <TagCreation
               onCreateTag={async (id) => {
                 setShowTag(false);
-                tagsIds.push(id);
+                tagsIds.push(`${id}`);
                 setTagsIds([...tagsIds]);
               }}
             />

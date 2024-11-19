@@ -1,9 +1,8 @@
 import { useQuery } from "@apollo/client";
 import { AdCard } from "./AdCard";
-import classes from "./RecentAds.module.css";
 import { GET_ADS } from "../api/ads";
 import { useState } from "react";
-import { AdType } from "../types";
+import classes from "./RecentAds.module.css";
 
 export const RecentAds = () => {
   const { data, loading, error } = useQuery(GET_ADS, {
@@ -11,7 +10,7 @@ export const RecentAds = () => {
   });
   const [totalPrice, setTotalPrice] = useState(0);
 
-  const ads = data?.ads as AdType[];
+  const ads = data?.ads;
 
   if (error) return <p>{`Error! ${error.message}`}</p>;
   return (
@@ -33,10 +32,11 @@ export const RecentAds = () => {
               picture={ad.picture}
               title={ad.title}
               price={ad.price / 100}
-              description={ad.description}
+              description={ad.description ? ad.description : ""}
               owner={ad.owner}
               location={ad.location}
               category={ad.category}
+              createdAt={ad.createdAt}
               onAddToCard={() => setTotalPrice(totalPrice + ad.price / 100)}
             />
           ))}

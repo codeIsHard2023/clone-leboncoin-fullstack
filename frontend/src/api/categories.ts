@@ -1,15 +1,15 @@
-import { gql } from "@apollo/client";
+import { gql } from "../gql";
 
-export const GET_CATEGORIES = gql`
+export const GET_CATEGORIES = gql(`
   query Categories {
     categories {
       id
       name
     }
   }
-`;
+`);
 
-export const GET_CATEGORY_ADS = gql`
+export const GET_CATEGORY_ADS = gql(`
   query Category($categoryId: ID!) {
     category(id: $categoryId) {
       id
@@ -23,16 +23,20 @@ export const GET_CATEGORY_ADS = gql`
         id
         description
         createdAt
+        category{
+        id
+        name
+        }
       }
     }
   }
-`;
+`);
 
-export const CREATE_CATEGORY = gql`
+export const CREATE_CATEGORY = gql(`
   mutation CreateCategory($data: CreateCategoryInput!) {
     createCategory(data: $data) {
       name
       id
     }
   }
-`;
+`);

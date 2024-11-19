@@ -11,13 +11,12 @@ export const TagCreation = (props: { onCreateTag(id: number): void }) => {
 
   const createNewTag = async () => {
     if (!name?.trim()) return;
-    const { data: createTag } = await doCreatTag({
+    const { data } = await doCreatTag({
       variables: { data: { name } },
     });
-    if (createTag.name) {
-      console.log(createTag.name);
+    if (data?.createTag.name) {
       setName("");
-      props.onCreateTag(createTag.name);
+      props.onCreateTag(Number(data?.createTag.id));
     }
   };
   if (error) return <p>{`Error! ${error?.message}`}</p>;

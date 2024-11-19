@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { gql } from "../gql";
 
-export const GET_ADS = gql`
+export const GET_ADS = gql(`
   query Ads {
     ads {
       id
@@ -10,11 +10,16 @@ export const GET_ADS = gql`
       description
       owner
       location
+      createdAt
+      category {
+        id
+        name
+      }
     }
   }
-`;
+`);
 
-export const GET_AD = gql`
+export const GET_AD = gql(`
   query Ad($adId: ID!) {
     ad(id: $adId) {
       id
@@ -35,29 +40,29 @@ export const GET_AD = gql`
       }
     }
   }
-`;
+`);
 
-export const CREATE_AD = gql`
+export const CREATE_AD = gql(`
   mutation CreateAd($data: AdCreateInput!) {
     createAd(data: $data) {
       id
     }
   }
-`;
+`);
 
-export const UPDATE_AD = gql`
+export const UPDATE_AD = gql(`
   mutation UpdateAdd($data: AdUpdateInput!, $adId: ID!) {
     updateAdd(data: $data, id: $adId) {
       id
       title
     }
   }
-`;
+`);
 
-export const DELETE_AD = gql`
+export const DELETE_AD = gql(`
   mutation DeleteAd($adId: ID!) {
     deleteAd(id: $adId) {
       id
     }
   }
-`;
+`);

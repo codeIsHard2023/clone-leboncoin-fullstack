@@ -1,5 +1,4 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { AdType } from "../types";
 import classes from "./AdDetails.module.css";
 import { useMutation, useQuery } from "@apollo/client";
 import { DELETE_AD, GET_AD } from "../api/ads";
@@ -10,8 +9,8 @@ export const AdDetails = () => {
   const params = useParams<{ id: string }>();
   const id = Number(params.id);
 
-  const { data, loading, error } = useQuery<{ ad: AdType }>(GET_AD, {
-    variables: { adId: id },
+  const { data, loading, error } = useQuery(GET_AD, {
+    variables: { adId: `${id}` },
     fetchPolicy: "cache-and-network",
   });
 
@@ -21,7 +20,7 @@ export const AdDetails = () => {
 
   const deleteAdt = async () => {
     const { data } = await doDelteAd({
-      variables: { adId: id },
+      variables: { adId: `${id}` },
     });
 
     if (data) {
@@ -72,9 +71,9 @@ export const AdDetails = () => {
           <span style={{ marginTop: "1rem" }}>
             Catégorie: {ad?.category?.name.toLowerCase()}
           </span>
-          {data?.ad.tags && (
+          {ad && ad.tags && (
             <div style={{ marginBlock: "1rem" }}>
-              {data.ad.tags.map((tag) => {
+              {ad.tags.map((tag) => {
                 return (
                   <Link
                     to="/"
@@ -90,8 +89,7 @@ export const AdDetails = () => {
                       borderRadius: "8px",
                     }}
                   >
-                    {" "}
-                    {tag.name}{" "}
+                    {tag.name}
                   </Link>
                 );
               })}

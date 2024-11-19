@@ -1,18 +1,18 @@
 export type AdType = {
-  id: number;
+  id: string;
   picture: string;
   title: string;
   price: number;
-  description: string;
+  description?: string;
   owner: string;
   location: string;
   createdAt: Date;
-  category?: CategoryType;
-  tags: TagType[];
+  category: CategoryType;
+  tags?: TagType[];
 };
 
 export type CategoryType = {
-  id: number;
+  id: string;
   name: string;
   ads?: AdType[];
 };

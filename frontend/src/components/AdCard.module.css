@@ -1,4 +1,5 @@
 .adCardContainer {
+  margin-block: 1rem;
   border-radius: 8px;
   border: 1px solid lightgray;
   color: inherit;

@@ -1,13 +1,10 @@
 import { Link } from "react-router-dom";
 import classes from "./Header.module.css";
-import { CategoryType } from "../types";
 import { useQuery } from "@apollo/client";
 import { GET_CATEGORIES } from "../api/categories";
 
 export const Header = () => {
-  const { data, loading, error } = useQuery<{ categories: CategoryType[] }>(
-    GET_CATEGORIES
-  );
+  const { data, loading, error } = useQuery(GET_CATEGORIES);
 
   const categories = data?.categories;
 

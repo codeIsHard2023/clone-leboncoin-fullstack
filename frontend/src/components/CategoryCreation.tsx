@@ -5,28 +5,27 @@ import { CREATE_CATEGORY, GET_CATEGORIES } from "../api/categories";
 export const CategoryCreation = (props: {
   onCreateCateg(id: number): void;
 }) => {
-  const [name, setName] = useState<string>();
+  const [name, setName] = useState<string>("");
 
   const [doCreateCatgory, { error }] = useMutation(CREATE_CATEGORY, {
     refetchQueries: [GET_CATEGORIES],
   });
 
   const createNewCategory = async () => {
-    const {
-      data: { createCategory },
-    } = await doCreateCatgory({
+    const { data } = await doCreateCatgory({
       variables: {
         data: {
           name,
         },
       },
     });
-    if (createCategory) {
-      console.log(createCategory.id);
+    if (data?.createCategory) {
       setName("");
-      props.onCreateCateg(createCategory.id);
+      props.onCreateCateg(Number(data.createCategory.id));
     }
   };
+
+  if (error) return <p>{`Erreur ${error}`}</p>;
 
   return (
     <div>

@@ -1,4 +1,4 @@
-import { CreateUpdateForm } from "../components/createUpdateForm";
+import { CreateUpdateForm } from "../components/CreateUpdateForm";
 
 export const NewAdEditor = () => {
   return (
