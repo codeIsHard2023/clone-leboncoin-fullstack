@@ -1,4 +1,12 @@
 services:
+  back:
+    build: ./backend
+    ports:
+      - 3000:3000
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/tsconfig.json:/app/tsconfig.json
+    command: npm start
   front:
     build: ./frontend
     ports:
@@ -8,3 +16,4 @@ services:
       - ./frontend/index.html:/app/index.html
       - ./frontend/public:/app/public
       - ./frontend/vite.config.ts:/app/vite.config.ts
+    command: npm run dev
