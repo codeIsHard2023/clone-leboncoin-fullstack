@@ -4,6 +4,7 @@ services:
     ports:
       - 3000:3000
     volumes:
+      - ./backend/db/leboncoin.sqlite:/app/db/leboncoin.sqlite
       - ./backend/src:/app/src
       - ./backend/tsconfig.json:/app/tsconfig.json
     command: npm start

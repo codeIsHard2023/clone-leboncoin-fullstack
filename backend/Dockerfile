@@ -7,4 +7,4 @@ RUN npm i
 
 COPY tsconfig.json tsconfig.json
 COPY src src
-COPY db db
+COPY db/leboncoin.sqlite db/leboncoin.sqlite
