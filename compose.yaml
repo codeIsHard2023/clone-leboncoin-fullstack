@@ -1,0 +1,10 @@
+services:
+  front:
+    build: ./frontend
+    ports:
+      - 3000:5173
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/public:/app/public
+      - ./frontend/vite.config.ts:/app/vite.config.ts
