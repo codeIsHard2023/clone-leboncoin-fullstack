@@ -4,17 +4,32 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./backend/db/leboncoin.sqlite:/app/db/leboncoin.sqlite
       - ./backend/src:/app/src
       - ./backend/tsconfig.json:/app/tsconfig.json
     command: npm start
+
+  db:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: secretcorner
+      POSTGRES_USER: thegoodcorner
+      POSTGRES_DB: thegoodcorner
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
   front:
     build: ./frontend
     ports:
-      - 5050:5173
+      - 5173:5173
     volumes:
       - ./frontend/src:/app/src
       - ./frontend/index.html:/app/index.html
       - ./frontend/public:/app/public
       - ./frontend/vite.config.ts:/app/vite.config.ts
     command: npm run dev
+
+volumes:
+  dbdata:
+    driver: local

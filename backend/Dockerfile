@@ -7,4 +7,5 @@ RUN npm i
 
 COPY tsconfig.json tsconfig.json
 COPY src src
-COPY db/leboncoin.sqlite db/leboncoin.sqlite
+
+EXPOSE 5000
