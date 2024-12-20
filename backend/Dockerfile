@@ -8,4 +8,6 @@ RUN npm i
 COPY tsconfig.json tsconfig.json
 COPY src src
 
-EXPOSE 5000
+EXPOSE 3000
+
+CMD npm start
