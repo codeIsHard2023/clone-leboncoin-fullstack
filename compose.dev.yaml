@@ -3,6 +3,8 @@ services:
     build: ./backend
     ports:
       - 3000:3000
+    env_file:
+      - database.env
     volumes:
       - ./backend/src:/app/src
 
@@ -10,10 +12,8 @@ services:
     image: postgres
     ports:
       - 5432:5432
-    environment:
-      POSTGRES_PASSWORD: secretcorner
-      POSTGRES_USER: thegoodcorner
-      POSTGRES_DB: thegoodcorner
+    env_file:
+      - database.env
     volumes:
       - dbdata:/var/lib/postgresql/data
 
