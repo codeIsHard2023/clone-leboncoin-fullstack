@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "dev-and-codegen": "concurrently \"npm run dev\" \"npx graphql-codegen --watch\""
+    "dev-and-codegen": "concurrently \"npx vite --host\" \"npx graphql-codegen --watch\""
   },
   "dependencies": {
     "@apollo/client": "^3.11.10",
