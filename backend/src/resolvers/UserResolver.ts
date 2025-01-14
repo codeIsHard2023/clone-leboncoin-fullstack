@@ -1,8 +1,9 @@
-import { Arg, Resolver, Mutation } from "type-graphql";
+import { Arg, Resolver, Mutation, Ctx } from "type-graphql";
 import { CreateUserInput, User } from "../entities/User";
 import { validate } from "class-validator";
 import { hash, verify } from "argon2";
-import { sign, verify as verifyJWT } from "jsonwebtoken";
+import { sign, verify as jwtVerify } from "jsonwebtoken";
+import Cookies from "cookies";
 
 @Resolver()
 export class UserResolver {
@@ -20,7 +21,6 @@ export class UserResolver {
         hashedPassword,
         password: undefined,
       });
-
       await newUser.save();
       return newUser;
     } catch (err) {
@@ -32,7 +32,8 @@ export class UserResolver {
   @Mutation(() => User, { nullable: true })
   async signin(
     @Arg("email") email: string,
-    @Arg("password") password: string
+    @Arg("password") password: string,
+    @Ctx() context: any
   ): Promise<User | null> {
     const errors = await validate({ email, password });
     if (errors.length > 0) {
@@ -45,11 +46,17 @@ export class UserResolver {
       if (user) {
         if (await verify(user.hashedPassword, password)) {
           const token = sign({ id: user.id }, `${process.env.JWT_SECRET_KEY}`, {
-            expiresIn: "10s",
+            expiresIn: "72h",
+          });
+          const { req, res } = context;
+          const cookies = new Cookies(req, res);
+          cookies.set("token", token, {
+            maxAge: 1000 * 60 * 60 * 24 * 3,
+            httpOnly: true,
           });
           // test token
           //   try {
-          //     verifyJWT(token, `${process.env.JWT_SECRET_KEY}`);
+          //     jwtVerify(token, `${process.env.JWT_SECRET_KEY}`);
           //     console.log("OK");
           //   } catch {
           //     console.log("KO");
