@@ -5,6 +5,7 @@ services:
       - 3000:3000
     env_file:
       - database.env
+      - backend.env
     volumes:
       - ./backend/src:/app/src
 

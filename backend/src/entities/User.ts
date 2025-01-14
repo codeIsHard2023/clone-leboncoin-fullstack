@@ -1,4 +1,4 @@
-import { Length, IsEmail } from "class-validator";
+import { Length, IsEmail, IsStrongPassword } from "class-validator";
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { Field, ID, InputType, ObjectType } from "type-graphql";
 
@@ -10,12 +10,11 @@ export class User extends BaseEntity {
   id!: number;
 
   @Column({ unique: true })
-  @IsEmail()
   @Field()
   email!: string;
 
   @Column()
-  //   @Field()
+  @Field()
   hashedPassword!: string;
 }
 
@@ -26,7 +25,13 @@ export class CreateUserInput {
   email!: String;
 
   @Length(10, 100, { message: "Password length" })
-  //   @IsStrongPassword()
+  @IsStrongPassword(
+    { minLength: 10, minNumbers: 1, minSymbols: 1, minUppercase: 1 },
+    {
+      message:
+        "Password must be at least 10 characters long and include 1 number, 1 uppercase letter, and 1 symbol",
+    }
+  )
   @Field()
   password!: String;
 }
