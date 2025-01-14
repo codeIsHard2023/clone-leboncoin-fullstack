@@ -8,31 +8,38 @@ import { sign, verify as verifyJWT } from "jsonwebtoken";
 export class UserResolver {
   @Mutation(() => User)
   async createUser(@Arg("data") data: CreateUserInput): Promise<User | null> {
-    const newUser = new User();
-    const errors = await validate(newUser);
+    const errors = await validate(data);
     if (errors.length) {
-      throw new Error(`Input validation failed: ${errors}`);
-    } else {
-      try {
-        const hashedPassword = await hash(`${data.password}`);
-        Object.assign(newUser, data, {
-          hashedPassword,
-          password: undefined,
-        });
+      throw new Error(`Validation error: ${errors}`);
+    }
 
-        await newUser.save();
-        return newUser;
-      } catch (err) {
-        console.log(err);
-        throw new Error(`Unable to create account: Error ${err}`);
-      }
+    const newUser = new User();
+    try {
+      const hashedPassword = await hash(`${data.password}`);
+      Object.assign(newUser, data, {
+        hashedPassword,
+        password: undefined,
+      });
+
+      await newUser.save();
+      return newUser;
+    } catch (err) {
+      console.log(err);
+      throw new Error(`Unable to create account: Error ${err}`);
     }
   }
+
   @Mutation(() => User, { nullable: true })
   async signin(
     @Arg("email") email: string,
     @Arg("password") password: string
   ): Promise<User | null> {
+    const errors = await validate({ email, password });
+    if (errors.length > 0) {
+      console.error(errors);
+      throw new Error(`Validation error: ${errors}`);
+    }
+
     try {
       const user = await User.findOneBy({ email });
       if (user) {
@@ -41,9 +48,10 @@ export class UserResolver {
             expiresIn: "10s",
           });
           // test token
-          //   if (verifyJWT(token, `${process.env.JWT_SECRET_KEY}`)) {
+          //   try {
+          //     verifyJWT(token, `${process.env.JWT_SECRET_KEY}`);
           //     console.log("OK");
-          //   } else {
+          //   } catch {
           //     console.log("KO");
           //   }
           return user;

@@ -14,7 +14,7 @@ export class User extends BaseEntity {
   email!: string;
 
   @Column()
-  @Field()
+  //   @Field()
   hashedPassword!: string;
 }
 
@@ -24,7 +24,6 @@ export class CreateUserInput {
   @IsEmail()
   email!: String;
 
-  @Length(10, 100, { message: "Password length" })
   @IsStrongPassword(
     { minLength: 10, minNumbers: 1, minSymbols: 1, minUppercase: 1 },
     {
