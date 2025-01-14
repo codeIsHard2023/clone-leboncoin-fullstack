@@ -15,13 +15,14 @@ export class User extends BaseEntity {
   email!: string;
 
   @Column()
-  @Field()
+  //   @Field()
   hashedPassword!: string;
 }
 
 @InputType()
 export class CreateUserInput {
   @Field()
+  @IsEmail()
   email!: String;
 
   @Length(10, 100, { message: "Password length" })

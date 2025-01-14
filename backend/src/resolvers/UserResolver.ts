@@ -11,18 +11,41 @@ export class UserResolver {
 
     try {
       const hashedPassword = await hash(`${data.password}`);
-      data.password = "";
-
-      Object.assign(newUser, data, { hashedPassword });
+      Object.assign(newUser, data, {
+        hashedPassword,
+        password: undefined,
+      });
       const errors = await validate(newUser);
       if (errors.length) {
-        return null;
+        throw new Error(`Account validation failed: ${errors}`);
       } else {
         await newUser.save();
         return newUser;
       }
     } catch (err) {
-      throw new Error(`Error ${err}`);
+      console.log(err);
+      throw new Error(`Unable to create account: Error ${err}`);
+    }
+  }
+  @Mutation(() => User, { nullable: true })
+  async signin(
+    @Arg("email") email: string,
+    @Arg("password") password: string
+  ): Promise<User | null> {
+    try {
+      const user = await User.findOneBy({ email });
+      if (user) {
+        if (await verify(user.hashedPassword, password)) {
+          return user;
+        } else {
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.log(err);
+      throw new Error(`Signin failed ${err}`);
     }
   }
 }
