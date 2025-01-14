@@ -7,6 +7,7 @@ import { CategoriesResolver } from "./resolvers/CategoriesResolver";
 import { AdsResolver } from "./resolvers/AdsResolver";
 import { TagsResolver } from "./resolvers/TagsResolver";
 import { UserResolver } from "./resolvers/UserResolver";
+import { authChecker } from "./utils/auth";
 
 const port: number = 3000;
 const portClient: number = 5173;
@@ -16,6 +17,7 @@ async function initialize() {
   console.log("Datasource is connected");
   const schema = await buildSchema({
     resolvers: [UserResolver, CategoriesResolver, AdsResolver, TagsResolver],
+    authChecker,
   });
 
   const server = new ApolloServer({ schema });

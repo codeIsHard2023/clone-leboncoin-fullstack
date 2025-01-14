@@ -33,7 +33,7 @@ export class UserResolver {
   async signin(
     @Arg("email") email: string,
     @Arg("password") password: string,
-    @Ctx() context: any
+    @Ctx() context: { req: any; res: any }
   ): Promise<User | null> {
     const errors = await validate({ email, password });
     if (errors.length > 0) {
