@@ -1,8 +1,8 @@
-import { Arg, Resolver, Mutation, Ctx } from "type-graphql";
+import { Arg, Resolver, Mutation, Ctx, Query, Authorized } from "type-graphql";
 import { CreateUserInput, User } from "../entities/User";
 import { validate } from "class-validator";
 import { hash, verify } from "argon2";
-import { sign, verify as jwtVerify } from "jsonwebtoken";
+import { sign, verify as jwtVerify, decode } from "jsonwebtoken";
 import Cookies from "cookies";
 
 @Resolver()
@@ -54,13 +54,6 @@ export class UserResolver {
             maxAge: 1000 * 60 * 60 * 24 * 3,
             httpOnly: true,
           });
-          // test token
-          //   try {
-          //     jwtVerify(token, `${process.env.JWT_SECRET_KEY}`);
-          //     console.log("OK");
-          //   } catch {
-          //     console.log("KO");
-          //   }
           return user;
         } else {
           return null;
@@ -72,5 +65,17 @@ export class UserResolver {
       console.log(err);
       throw new Error(`Signin failed ${err}`);
     }
+  }
+
+  @Query(() => User, { nullable: true })
+  @Authorized()
+  async whoAmI(@Ctx() context: { req: any; res: any }) {
+    const cookies = new Cookies(context.req, context.res);
+    const token = cookies.get("token");
+    const payload = decode(`${token}`) as unknown as { id: number };
+    const user = await User.findOneBy({
+      id: payload.id,
+    });
+    return user;
   }
 }

@@ -2,12 +2,15 @@ import { Length } from "class-validator";
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Ad } from "./Ad";
 import { ID, ObjectType, Field, InputType } from "type-graphql";
+import { User } from "./User";
 
 @Entity("category")
 @ObjectType()
@@ -24,6 +27,14 @@ export class Category extends BaseEntity {
   @Length(3, 100, { message: "Entre 3 et 100 caractères" })
   @Field()
   name!: string;
+
+  @CreateDateColumn()
+  @Field()
+  createdAt!: Date;
+
+  @ManyToOne(() => User)
+  @Field(() => User)
+  createdBy!: User;
 }
 
 @InputType()
