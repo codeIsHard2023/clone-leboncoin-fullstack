@@ -43,7 +43,7 @@ export const Header = () => {
             </svg>
           </button>
         </form>
-        <Link
+        {/* <Link
           to="/ads/new-ad"
           className={`${classes.button} ${classes.linkButton}`}
         >
@@ -51,6 +51,20 @@ export const Header = () => {
           <span className={`${classes.mobileLongLabel}`}>
             Déposer une annonce
           </span>
+        </Link> */}
+        <Link
+          to="/signup"
+          className={`${classes.button} ${classes.linkButton}`}
+        >
+          <span className={`${classes.mobileShortLabel}`}>Signup</span>
+          <span className={`${classes.mobileLongLabel}`}>S'enregistrer</span>
+        </Link>
+        <Link
+          to="/signin"
+          className={`${classes.button} ${classes.linkButton}`}
+        >
+          <span className={`${classes.mobileShortLabel}`}>Signin</span>
+          <span className={`${classes.mobileLongLabel}`}>Se connecter</span>
         </Link>
       </div>
       <nav className={`${classes.categoriesNavigation}`}>

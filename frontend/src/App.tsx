@@ -6,6 +6,8 @@ import { AdDetails } from "./pages/AdDetails";
 import { CategoryAds } from "./pages/CategoryAds";
 import { NewAdEditor } from "./pages/NewAdEditor";
 import { UpdateAdEditor } from "./pages/UpdateAdEditor";
+import { SignupPage } from "./pages/Signup";
+import { SigninPage } from "./pages/Signin";
 import "./App.css";
 
 export function App() {
@@ -13,6 +15,8 @@ export function App() {
     <Routes>
       <Route path="/" element={<DefaultLayout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<SignupPage />} />
+        <Route path="/signin" element={<SigninPage />} />
         <Route path="about" element={<About />} />
         <Route path="/ads/new-ad" element={<NewAdEditor />} />
         <Route path="/ads/:id/update/" element={<UpdateAdEditor />} />

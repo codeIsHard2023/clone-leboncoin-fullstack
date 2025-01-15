@@ -8,7 +8,7 @@ import { ContextType, getUserAuth } from "../utils/auth";
 
 @Resolver()
 export class UserResolver {
-  @Authorized()
+  // @Authorized()
   @Mutation(() => User)
   async createUser(@Arg("data") data: CreateUserInput): Promise<User | null> {
     const errors = await validate(data);
@@ -45,8 +45,12 @@ export class UserResolver {
 
     try {
       const user = await User.findOneBy({ email });
+      console.log("user ==> ", user);
       if (user) {
+        console.log("password ==> ", password);
+        console.log("hashedPassword ==> ", user.hashedPassword);
         if (await verify(user.hashedPassword, password)) {
+          console.log("MDP checked");
           const token = sign({ id: user.id }, `${process.env.JWT_SECRET_KEY}`, {
             expiresIn: "72h",
           });
