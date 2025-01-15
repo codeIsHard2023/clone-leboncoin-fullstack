@@ -4,9 +4,11 @@ import { validate } from "class-validator";
 import { hash, verify } from "argon2";
 import { sign, verify as jwtVerify, decode } from "jsonwebtoken";
 import Cookies from "cookies";
+import { ContextType, getUserAuth } from "../utils/auth";
 
 @Resolver()
 export class UserResolver {
+  @Authorized()
   @Mutation(() => User)
   async createUser(@Arg("data") data: CreateUserInput): Promise<User | null> {
     const errors = await validate(data);
@@ -67,15 +69,16 @@ export class UserResolver {
     }
   }
 
-  @Query(() => User, { nullable: true })
-  @Authorized()
-  async whoAmI(@Ctx() context: { req: any; res: any }) {
+  @Mutation(() => Boolean)
+  async signout(@Ctx() context: { req: any; res: any }): Promise<Boolean> {
     const cookies = new Cookies(context.req, context.res);
-    const token = cookies.get("token");
-    const payload = decode(`${token}`) as unknown as { id: number };
-    const user = await User.findOneBy({
-      id: payload.id,
-    });
-    return user;
+    cookies.set("token", "", { maxAge: 0 });
+    return true;
+  }
+
+  @Authorized()
+  @Query(() => User, { nullable: true })
+  async whoAmI(@Ctx() context: ContextType) {
+    return await getUserAuth(context);
   }
 }

@@ -1,4 +1,4 @@
-import { Arg, Query, Resolver, ID, Mutation } from "type-graphql";
+import { Arg, Query, Resolver, ID, Mutation, Authorized } from "type-graphql";
 import { CreateTagInput, Tag, UpdateTagInput } from "../entities/Tag";
 import { validate } from "class-validator";
 
@@ -34,6 +34,7 @@ export class TagsResolver {
   //     return ads;
   //   }
 
+  @Authorized()
   @Mutation(() => Tag)
   async createTag(@Arg("data") data: CreateTagInput): Promise<Tag | null> {
     const newTag = new Tag();
@@ -48,6 +49,7 @@ export class TagsResolver {
     }
   }
 
+  @Authorized()
   @Mutation(() => Tag, { nullable: true })
   async updateTag(
     @Arg("id", () => ID) id: number,
@@ -70,6 +72,7 @@ export class TagsResolver {
     return tagToUpdate;
   }
 
+  @Authorized()
   @Mutation(() => Tag, { nullable: true })
   async deleteTag(@Arg("id", () => ID) id: number): Promise<Tag | null> {
     const tagToDelete = await Tag.findOneBy({ id });

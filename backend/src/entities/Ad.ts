@@ -13,6 +13,7 @@ import {
 import { Category } from "./Category";
 import { Tag } from "./Tag";
 import { IdInput } from "./Id";
+import { User } from "./User";
 
 @Entity("ad")
 @ObjectType()
@@ -69,6 +70,10 @@ export class Ad extends BaseEntity {
   private setCreatedAt() {
     this.createdAt = new Date();
   }
+
+  @ManyToOne(() => User)
+  @Field(() => User)
+  createdBy!: User;
 }
 
 @InputType()

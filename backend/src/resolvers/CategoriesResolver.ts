@@ -1,4 +1,13 @@
-import { Arg, Query, Resolver, ID, Mutation, Info } from "type-graphql";
+import {
+  Arg,
+  Query,
+  Resolver,
+  ID,
+  Mutation,
+  Info,
+  Authorized,
+  Ctx,
+} from "type-graphql";
 import {
   Category,
   CreateCategoryInput,
@@ -7,6 +16,8 @@ import {
 import { validate } from "class-validator";
 import { GraphQLResolveInfo } from "graphql";
 import { hasRelation } from "../utils/relationCheck";
+import { ContextType } from "../utils/auth";
+import { In } from "typeorm";
 
 @Resolver()
 export class CategoriesResolver {
@@ -19,6 +30,7 @@ export class CategoriesResolver {
               tags: hasRelation(info, "tags"),
             }
           : false,
+        createdBy: true,
       },
     });
     return categories;
@@ -37,6 +49,7 @@ export class CategoriesResolver {
               tags: hasRelation(info, "tags"),
             }
           : false,
+        createdBy: true,
       },
     });
     if (category) {
@@ -64,31 +77,38 @@ export class CategoriesResolver {
     return ads;
   }
 
+  @Authorized()
   @Mutation(() => Category)
   async createCategory(
-    @Arg("data", () => CreateCategoryInput) data: CreateCategoryInput
+    @Arg("data", () => CreateCategoryInput) data: CreateCategoryInput,
+    @Ctx() context: ContextType
   ): Promise<Category | null> {
     const newCategory = new Category();
-    Object.assign(newCategory, data);
+    Object.assign(newCategory, data, { createdBy: context.user });
+
     const errors = await validate(newCategory);
 
     if (errors.length) {
       throw new Error(
         errors.map((e) => Object.values(e.constraints!)).join(", ")
       );
-      // return null;
     } else {
       await newCategory.save();
       return newCategory;
     }
   }
 
+  @Authorized()
   @Mutation(() => Category, { nullable: true })
   async updateCategory(
     @Arg("id", () => ID) id: number,
-    @Arg("data", () => UpdateCategoryInput) data: UpdateCategoryInput
+    @Arg("data", () => UpdateCategoryInput) data: UpdateCategoryInput,
+    @Ctx() context: ContextType
   ): Promise<Category | null> {
-    const categoryToUpdate = await Category.findOneBy({ id });
+    const categoryToUpdate = await Category.findOneBy({
+      id,
+      createdBy: { id: context.user?.id },
+    });
 
     if (categoryToUpdate) {
       Object.assign(categoryToUpdate, data);
@@ -104,11 +124,16 @@ export class CategoriesResolver {
     return categoryToUpdate;
   }
 
+  @Authorized()
   @Mutation(() => Category, { nullable: true })
   async deleteCategory(
-    @Arg("id", () => ID) id: number
+    @Arg("id", () => ID) id: number,
+    @Ctx() context: ContextType
   ): Promise<Category | null> {
-    const categoryToDelete = await Category.findOneBy({ id });
+    const categoryToDelete = await Category.findOneBy({
+      id,
+      createdBy: { id: context.user?.id },
+    });
 
     if (categoryToDelete) {
       const category = { ...categoryToDelete };
@@ -117,5 +142,21 @@ export class CategoriesResolver {
     } else {
       return null;
     }
+  }
+  @Authorized()
+  @Mutation(() => [Category])
+  async deleteCategories(
+    @Arg("ids", () => [ID]) ids: number[],
+    @Ctx() context: ContextType
+  ): Promise<Category[]> {
+    const categories = await Category.findBy({
+      id: In(ids),
+      createdBy: { id: context.user?.id },
+    });
+    await Category.delete({
+      id: In(ids),
+      createdBy: { id: context.user?.id },
+    });
+    return categories;
   }
 }

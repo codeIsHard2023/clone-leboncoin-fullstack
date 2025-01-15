@@ -1,13 +1,21 @@
-import { Arg, Query, Resolver, ID, Mutation, Authorized } from "type-graphql";
+import {
+  Arg,
+  Query,
+  Resolver,
+  ID,
+  Mutation,
+  Authorized,
+  Ctx,
+} from "type-graphql";
 
 import { validate } from "class-validator";
 import { Ad, AdCreateInput, AdUpdateInput } from "../entities/Ad";
 import { Tag } from "../entities/Tag";
+import { ContextType } from "../utils/auth";
 
 @Resolver()
 export class AdsResolver {
   @Query(() => [Ad])
-  @Authorized()
   async ads(): Promise<Ad[]> {
     const ads = await Ad.find({
       relations: {
@@ -36,13 +44,14 @@ export class AdsResolver {
       return null;
     }
   }
-
+  @Authorized()
   @Mutation(() => Ad)
   async createAd(
-    @Arg("data", () => AdCreateInput) data: AdCreateInput
+    @Arg("data", () => AdCreateInput) data: AdCreateInput,
+    @Ctx() context: ContextType
   ): Promise<Ad> {
     const newAd = new Ad();
-    Object.assign(newAd, data);
+    Object.assign(newAd, data, { createdBy: context.user });
 
     const errors = await validate(newAd);
 
@@ -100,6 +109,7 @@ export class AdsResolver {
     return null;
   }
 
+  @Authorized()
   @Mutation(() => Ad, { nullable: true })
   async deleteAd(@Arg("id", () => ID) id: number): Promise<Ad | null> {
     const adToDelete = await Ad.findOneBy({ id });
