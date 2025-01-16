@@ -2,13 +2,17 @@ import { useMutation } from "@apollo/client";
 import { useState } from "react";
 import { SIGNIN } from "../api/user";
 import { useNavigate } from "react-router-dom";
+import { WHOAMI } from "../api/user";
 
 export const SigninPage = () => {
   const [email, setEmail] = useState("test@gmail.com");
   const [password, setPassword] = useState("secretMdp2025@");
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [doSignin, { loading }] = useMutation(SIGNIN);
+
+  const [doSignin, { loading }] = useMutation(SIGNIN, {
+    refetchQueries: [WHOAMI],
+  });
 
   async function submitForm() {
     try {

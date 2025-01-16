@@ -80,7 +80,6 @@ export class UserResolver {
     return true;
   }
 
-  @Authorized()
   @Query(() => User, { nullable: true })
   async whoAmI(@Ctx() context: ContextType) {
     return await getUserAuth(context);

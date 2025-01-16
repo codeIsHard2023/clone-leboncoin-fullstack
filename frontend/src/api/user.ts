@@ -15,3 +15,18 @@ export const SIGNIN = gql`
     }
   }
 `;
+
+export const WHOAMI = gql`
+  query WhoAmI {
+    whoAmI {
+      id
+      email
+    }
+  }
+`;
+
+export const SIGNOUT = gql`
+  mutation Signout {
+    signout
+  }
+`;

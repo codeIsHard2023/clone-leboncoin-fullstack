@@ -1,12 +1,24 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import classes from "./Header.module.css";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { GET_CATEGORIES } from "../api/categories";
+import { SIGNOUT, WHOAMI } from "../api/user";
 
 export const Header = () => {
   const { data, loading, error } = useQuery(GET_CATEGORIES);
-
   const categories = data?.categories;
+
+  const { data: whoamiData } = useQuery(WHOAMI);
+  const user = whoamiData?.whoAmI;
+  console.log("user ==> ", user);
+
+  const [doSignout] = useMutation(SIGNOUT, { refetchQueries: [WHOAMI] });
+  const navigate = useNavigate();
+
+  async function onSignout() {
+    await doSignout();
+    navigate("/");
+  }
 
   if (error) return <p>{`Error! ${error.message}`}</p>;
   return (
@@ -43,29 +55,42 @@ export const Header = () => {
             </svg>
           </button>
         </form>
-        {/* <Link
-          to="/ads/new-ad"
-          className={`${classes.button} ${classes.linkButton}`}
-        >
-          <span className={`${classes.mobileShortLabel}`}>Publier</span>
-          <span className={`${classes.mobileLongLabel}`}>
-            Déposer une annonce
-          </span>
-        </Link> */}
-        <Link
-          to="/signup"
-          className={`${classes.button} ${classes.linkButton}`}
-        >
-          <span className={`${classes.mobileShortLabel}`}>Signup</span>
-          <span className={`${classes.mobileLongLabel}`}>S'enregistrer</span>
-        </Link>
-        <Link
-          to="/signin"
-          className={`${classes.button} ${classes.linkButton}`}
-        >
-          <span className={`${classes.mobileShortLabel}`}>Signin</span>
-          <span className={`${classes.mobileLongLabel}`}>Se connecter</span>
-        </Link>
+        {user ? (
+          <>
+            <Link
+              to="/ads/new-ad"
+              className={`${classes.button} ${classes.linkButton}`}
+            >
+              <span className={`${classes.mobileShortLabel}`}>Publier</span>
+              <span className={`${classes.mobileLongLabel}`}>
+                Déposer une annonce
+              </span>
+            </Link>
+            <button
+              onClick={onSignout}
+              className={`${classes.button} ${classes.linkButton}`}
+            >
+              Deconnexion
+            </button>
+          </>
+        ) : user === null ? (
+          <>
+            <Link
+              to="/signin"
+              className={`${classes.button} ${classes.linkButton}`}
+            >
+              <span className={`${classes.mobileLongLabel}`}>Se connecter</span>
+            </Link>
+            <Link
+              to="/signup"
+              className={`${classes.button} ${classes.linkButton}`}
+            >
+              <span className={`${classes.mobileLongLabel}`}>
+                S'enregistrer
+              </span>
+            </Link>
+          </>
+        ) : null}
       </div>
       <nav className={`${classes.categoriesNavigation}`}>
         {loading && <p>Chargement en cours ...</p>}

@@ -26,6 +26,8 @@ const documents = {
     "\n  mutation AddTag($data: CreateTagInput!) {\n    createTag(data: $data) {\n      name\n      id\n    }\n  }\n": types.AddTagDocument,
     "\n  mutation CreateUser($data: CreateUserInput!) {\n    createUser(data: $data) {\n      id\n    }\n  }\n": types.CreateUserDocument,
     "\n  mutation Signin($password: String!, $email: String!) {\n    signin(password: $password, email: $email) {\n      id\n    }\n  }\n": types.SigninDocument,
+    "\n  query WhoAmI {\n    whoAmI {\n      id\n      email\n    }\n  }\n": types.WhoAmIDocument,
+    "\n  mutation Signout {\n    signout\n  }\n": types.SignoutDocument,
 };
 
 /**
@@ -90,6 +92,14 @@ export function gql(source: "\n  mutation CreateUser($data: CreateUserInput!) {\
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function gql(source: "\n  mutation Signin($password: String!, $email: String!) {\n    signin(password: $password, email: $email) {\n      id\n    }\n  }\n"): (typeof documents)["\n  mutation Signin($password: String!, $email: String!) {\n    signin(password: $password, email: $email) {\n      id\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  query WhoAmI {\n    whoAmI {\n      id\n      email\n    }\n  }\n"): (typeof documents)["\n  query WhoAmI {\n    whoAmI {\n      id\n      email\n    }\n  }\n"];
+/**
+ * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function gql(source: "\n  mutation Signout {\n    signout\n  }\n"): (typeof documents)["\n  mutation Signout {\n    signout\n  }\n"];
 
 export function gql(source: string) {
   return (documents as any)[source] ?? {};
