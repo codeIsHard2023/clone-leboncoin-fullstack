@@ -1,0 +1,50 @@
+.formContainer {
+  width: 20vw;
+  margin: 5rem auto;
+  padding: 1rem;
+  background-color: white;
+  box-shadow: -3px 3px 3px 3px rgb(225, 224, 224);
+  border-radius: 0.5rem;
+}
+.form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-content: start;
+  gap: 0.5rem;
+  text-align: start;
+}
+
+.textField {
+  height: 40px;
+  background-color: white;
+  padding: 8px;
+  border: 2px solid #ffa41b;
+  border-radius: 8px;
+  font-size: 12px;
+  font-family: inherit;
+}
+.button {
+  max-width: 40%;
+  height: 40px;
+  margin-top: 2rem;
+  padding: 8px;
+  border-radius: 8px;
+  border: 2px solid #ffa41b;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: flex-end;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffa41b;
+  background-color: white;
+  cursor: pointer;
+}
+
+.headText {
+  font-size: 1.3rem;
+  font-weight: 600;
+}

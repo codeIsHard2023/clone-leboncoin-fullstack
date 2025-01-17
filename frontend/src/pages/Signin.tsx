@@ -3,6 +3,7 @@ import { useState } from "react";
 import { SIGNIN } from "../api/user";
 import { useNavigate } from "react-router-dom";
 import { WHOAMI } from "../api/user";
+import classes from "../pages/SignForms.module.css";
 
 export const SigninPage = () => {
   const [email, setEmail] = useState("test@gmail.com");
@@ -34,10 +35,11 @@ export const SigninPage = () => {
   }
 
   return (
-    <div>
+    <div className={classes.formContainer}>
+      <p className={classes.headText}>Connexion</p>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form
-        style={{ display: "flex", flexDirection: "column" }}
+        className={classes.form}
         onSubmit={(e) => {
           e.preventDefault();
           submitForm();
@@ -45,7 +47,7 @@ export const SigninPage = () => {
       >
         <label htmlFor="email"> Email * </label>
         <input
-          //   className={}
+          className={classes.textField}
           required
           type="email"
           value={email}
@@ -55,7 +57,7 @@ export const SigninPage = () => {
         />
         <label htmlFor="password"> Mot de passe * </label>
         <input
-          //   className={}
+          className={classes.textField}
           type="password"
           required
           value={password}
@@ -63,7 +65,7 @@ export const SigninPage = () => {
           id="password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button>Me connecter</button>
+        <button className={classes.button}>Me connecter</button>
         {loading && <span>Loading...</span>}
       </form>
     </div>

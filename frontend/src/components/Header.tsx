@@ -79,15 +79,13 @@ export const Header = () => {
               to="/signin"
               className={`${classes.button} ${classes.linkButton}`}
             >
-              <span className={`${classes.mobileLongLabel}`}>Se connecter</span>
+              <span className={`${classes.mobileLongLabel}`}>Connexion</span>
             </Link>
             <Link
               to="/signup"
               className={`${classes.button} ${classes.linkButton}`}
             >
-              <span className={`${classes.mobileLongLabel}`}>
-                S'enregistrer
-              </span>
+              <span className={`${classes.mobileLongLabel}`}>Inscription</span>
             </Link>
           </>
         ) : null}

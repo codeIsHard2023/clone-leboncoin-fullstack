@@ -2,6 +2,7 @@ import { useMutation } from "@apollo/client";
 import { useState } from "react";
 import { SIGNUP } from "../api/user";
 import { Link } from "react-router-dom";
+import classes from "../pages/SignForms.module.css";
 
 export const SignupPage = () => {
   const [email, setEmail] = useState("test@gmail.com");
@@ -45,10 +46,11 @@ export const SignupPage = () => {
   }
 
   return (
-    <div>
+    <div className={classes.formContainer}>
+      <p className={classes.headText}>Inscription</p>
       {error && <p style={{ color: "red" }}>{error}</p>}
       <form
-        style={{ display: "flex", flexDirection: "column" }}
+        className={classes.form}
         onSubmit={(e) => {
           e.preventDefault();
           submitForm();
@@ -56,7 +58,7 @@ export const SignupPage = () => {
       >
         <label htmlFor="email"> Email * </label>
         <input
-          //   className={}
+          className={classes.textField}
           required
           type="email"
           value={email}
@@ -66,7 +68,7 @@ export const SignupPage = () => {
         />
         <label htmlFor="password"> Mot de passe * </label>
         <input
-          //   className={}
+          className={classes.textField}
           type="password"
           required
           value={password}
@@ -74,7 +76,7 @@ export const SignupPage = () => {
           id="password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button>Créer mon compte</button>
+        <button className={classes.button}>Créer mon compte</button>
         {loading && <span>Loading...</span>}
       </form>
     </div>
