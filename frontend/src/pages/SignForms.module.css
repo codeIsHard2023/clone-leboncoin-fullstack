@@ -1,7 +1,7 @@
 .formContainer {
   width: 20vw;
   margin: 5rem auto;
-  padding: 1rem;
+  padding: 2rem 3rem;
   background-color: white;
   box-shadow: -3px 3px 3px 3px rgb(225, 224, 224);
   border-radius: 0.5rem;
@@ -42,6 +42,9 @@
   color: #ffa41b;
   background-color: white;
   cursor: pointer;
+}
+.button:hover {
+  scale: 1.02;
 }
 
 .headText {
